@@ -14,7 +14,7 @@ class KhoaController extends Controller
     public function index()
     {
         $khoas = Khoa::withCount(['nganhs', 'giangViens'])
-            ->latest()
+            ->orderBy('id', 'desc')
             ->paginate(15);
 
         return view('admin.khoa.index', compact('khoas'));

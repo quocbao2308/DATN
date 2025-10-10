@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
                     <h3>Sửa Người dùng</h3>
-                    <p class="text-subtitle text-muted">Chỉnh sửa thông tin tài khoản</p>
+                    <p class="text-subtitle text-muted">Chỉnh sửa thông tin tài khoản và vai trò</p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -33,15 +33,16 @@
                         </div>
                     @endif
 
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        <strong>Vai trò hiện tại:</strong> {{ $user->role }}.
-                        <br>Không thể thay đổi vai trò. Nếu cần đổi vai trò, vui lòng xóa user này và tạo mới.
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Vai trò hiện tại:</strong> {{ $currentRole }}
                     </div>
-                    <form action="{{ route('admin.users.update', $user) }}" method="POST">
+
+                    <form action="{{ route('admin.users.update', $user) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
+                        {{-- Thông tin đăng nhập --}}
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
@@ -83,14 +84,70 @@
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="role" class="form-label">Vai trò</label>
-                                    <input type="text" class="form-control" value="{{ $user->role }}" disabled>
-                                    <small class="text-muted">Để đổi vai trò, xóa user này và tạo mới</small>
+                                    <label for="role" class="form-label">Vai trò <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select @error('role') is-invalid @enderror" id="role"
+                                        name="role" required>
+                                        <option value="">-- Chọn vai trò --</option>
+                                        <option value="admin" {{ old('role', $roleKey) == 'admin' ? 'selected' : '' }}>
+                                            Admin</option>
+                                        <option value="dao_tao" {{ old('role', $roleKey) == 'dao_tao' ? 'selected' : '' }}>
+                                            Đào tạo</option>
+                                        <option value="giang_vien"
+                                            {{ old('role', $roleKey) == 'giang_vien' ? 'selected' : '' }}>Giảng viên
+                                        </option>
+                                        <option value="sinh_vien"
+                                            {{ old('role', $roleKey) == 'sinh_vien' ? 'selected' : '' }}>Sinh viên</option>
+                                    </select>
+                                    @error('role')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <hr class="my-4">
+
+                        {{-- Form chung cho tất cả vai trò --}}
+                        <div id="common-fields">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="ho_ten" class="form-label">Họ và tên <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control @error('ho_ten') is-invalid @enderror"
+                                            id="ho_ten" name="ho_ten"
+                                            value="{{ old('ho_ten', $roleData->ho_ten ?? '') }}" required>
+                                        @error('ho_ten')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="so_dien_thoai" class="form-label">Số điện thoại</label>
+                                        <input type="text"
+                                            class="form-control @error('so_dien_thoai') is-invalid @enderror"
+                                            id="so_dien_thoai" name="so_dien_thoai"
+                                            value="{{ old('so_dien_thoai', $roleData->so_dien_thoai ?? '') }}">
+                                        @error('so_dien_thoai')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Include forms cho từng vai trò (edit version) --}}
+                        <div id="role-specific-fields">
+                            @include('admin.users.forms.admin-edit-form')
+                            @include('admin.users.forms.daotao-edit-form')
+                            @include('admin.users.forms.giangvien-edit-form')
+                            @include('admin.users.forms.sinhvien-edit-form')
+                        </div>
+
+                        <div class="form-group mt-4">
                             <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Quay lại
                             </a>
@@ -103,4 +160,39 @@
             </div>
         </section>
     </div>
+
+    <script>
+        // Ẩn/hiện form theo vai trò
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleSelect = document.getElementById('role');
+            const adminForm = document.getElementById('admin-form');
+            const daoTaoForm = document.getElementById('daotao-form');
+            const giangVienForm = document.getElementById('giangvien-form');
+            const sinhVienForm = document.getElementById('sinhvien-form');
+
+            function toggleRoleForms() {
+                const selectedRole = roleSelect.value;
+
+                // Ẩn tất cả forms
+                if (adminForm) adminForm.style.display = 'none';
+                if (daoTaoForm) daoTaoForm.style.display = 'none';
+                if (giangVienForm) giangVienForm.style.display = 'none';
+                if (sinhVienForm) sinhVienForm.style.display = 'none';
+
+                // Hiện form tương ứng
+                if (selectedRole === 'admin' && adminForm) {
+                    adminForm.style.display = 'block';
+                } else if (selectedRole === 'dao_tao' && daoTaoForm) {
+                    daoTaoForm.style.display = 'block';
+                } else if (selectedRole === 'giang_vien' && giangVienForm) {
+                    giangVienForm.style.display = 'block';
+                } else if (selectedRole === 'sinh_vien' && sinhVienForm) {
+                    sinhVienForm.style.display = 'block';
+                }
+            }
+
+            roleSelect.addEventListener('change', toggleRoleForms);
+            toggleRoleForms(); // Chạy lần đầu khi load page
+        });
+    </script>
 @endsection

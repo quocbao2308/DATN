@@ -14,9 +14,9 @@ class ChuyenNganhController extends Controller
      */
     public function index()
     {
-        $chuyenNganhs = ChuyenNganh::with(['nganh.khoa'])
+        $chuyenNganhs = ChuyenNganh::with('nganh.khoa')
             ->withCount('sinhViens')
-            ->latest()
+            ->orderBy('id', 'desc')
             ->paginate(15);
 
         return view('admin.chuyen-nganh.index', compact('chuyenNganhs'));

@@ -15,7 +15,6 @@ class DaoTao extends Model
         'email',
         'so_dien_thoai',
         'dia_chi',
-        'vai_tro_id',
     ];
 
     /**
@@ -24,13 +23,5 @@ class DaoTao extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    /**
-     * Vai trò
-     */
-    public function vaiTro()
-    {
-        return $this->belongsTo(VaiTro::class, 'vai_tro_id');
     }
 }

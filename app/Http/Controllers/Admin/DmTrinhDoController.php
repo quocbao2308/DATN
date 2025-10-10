@@ -14,7 +14,7 @@ class DmTrinhDoController extends Controller
     public function index()
     {
         $trinhDos = DmTrinhDo::withCount('giangViens')
-            ->latest()
+            ->orderBy('id', 'desc')
             ->paginate(15);
 
         return view('admin.trinh-do.index', compact('trinhDos'));

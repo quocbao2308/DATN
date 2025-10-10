@@ -53,9 +53,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Quản lý Người dùng
-    Route::resource('users', UserManagementController::class);
-
-    // Quản lý Danh mục
+    Route::resource('users', UserManagementController::class);    // Quản lý Danh mục
     Route::resource('khoa', KhoaController::class);
     Route::resource('nganh', NganhController::class);
     Route::resource('chuyen-nganh', ChuyenNganhController::class);

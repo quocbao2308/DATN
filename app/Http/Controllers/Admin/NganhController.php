@@ -16,7 +16,7 @@ class NganhController extends Controller
     {
         $nganhs = Nganh::with('khoa')
             ->withCount(['chuyenNganhs', 'sinhViens'])
-            ->latest()
+            ->orderBy('id', 'desc')
             ->paginate(15);
 
         return view('admin.nganh.index', compact('nganhs'));
