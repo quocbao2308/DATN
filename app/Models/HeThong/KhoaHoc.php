@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\HeThong;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +29,6 @@ class KhoaHoc extends Model
      */
     public function sinhViens()
     {
-        return $this->hasMany(\App\Models\User\SinhVien::class, 'khoa_hoc_id');
+        return $this->hasMany(\App\Models\NhanSu\SinhVien::class, 'khoa_hoc_id');
     }
 }

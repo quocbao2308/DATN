@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\System\TrangThaiHocTap;
+use App\Models\HeThong\TrangThaiHocTap;
 use Illuminate\Http\Request;
 
 class TrangThaiHocTapController extends Controller

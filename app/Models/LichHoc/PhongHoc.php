@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Schedule;
+namespace App\Models\LichHoc;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

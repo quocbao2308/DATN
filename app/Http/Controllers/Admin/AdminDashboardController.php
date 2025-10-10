@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Academic\Khoa;
-use App\Models\Academic\Nganh;
-use App\Models\People\SinhVien;
-use App\Models\People\GiangVien;
-use App\Models\System\KhoaHoc;
+use App\Models\DaoTao\Khoa;
+use App\Models\DaoTao\Nganh;
+use App\Models\NhanSu\SinhVien;
+use App\Models\NhanSu\GiangVien;
+use App\Models\HeThong\KhoaHoc;
 
 class AdminDashboardController extends Controller
 {

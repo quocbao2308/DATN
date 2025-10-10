@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\People;
+namespace App\Models\NhanSu;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,7 +27,7 @@ class SinhVien extends Model
      */
     public function nganh()
     {
-        return $this->belongsTo(\App\Models\Academic\Nganh::class, 'nganh_id');
+        return $this->belongsTo(\App\Models\DaoTao\Nganh::class, 'nganh_id');
     }
 
     /**
@@ -35,7 +35,7 @@ class SinhVien extends Model
      */
     public function chuyenNganh()
     {
-        return $this->belongsTo(\App\Models\Academic\ChuyenNganh::class, 'chuyen_nganh_id');
+        return $this->belongsTo(\App\Models\DaoTao\ChuyenNganh::class, 'chuyen_nganh_id');
     }
 
     /**
@@ -43,7 +43,7 @@ class SinhVien extends Model
      */
     public function khoaHoc()
     {
-        return $this->belongsTo(\App\Models\System\KhoaHoc::class, 'khoa_hoc_id');
+        return $this->belongsTo(\App\Models\HeThong\KhoaHoc::class, 'khoa_hoc_id');
     }
 
     /**
@@ -51,6 +51,6 @@ class SinhVien extends Model
      */
     public function trangThaiHocTap()
     {
-        return $this->belongsTo(\App\Models\System\TrangThaiHocTap::class, 'trang_thai_hoc_tap_id');
+        return $this->belongsTo(\App\Models\HeThong\TrangThaiHocTap::class, 'trang_thai_hoc_tap_id');
     }
 }

@@ -90,7 +90,7 @@ Route::prefix('sinh-vien')->name('sinh-vien.')->middleware(['auth'])->group(func
 
 // API for hierarchical selects
 Route::get('/api/nganh-by-khoa/{khoa_id}', function ($khoa_id) {
-    return \App\Models\Academic\Nganh::where('khoa_id', $khoa_id)->get(['id', 'ten_nganh']);
+    return \App\Models\DaoTao\Nganh::where('khoa_id', $khoa_id)->get(['id', 'ten_nganh']);
 })->middleware('auth');
 
 require __DIR__ . '/auth.php';

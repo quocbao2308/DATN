@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Academic;
+namespace App\Models\DaoTao;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

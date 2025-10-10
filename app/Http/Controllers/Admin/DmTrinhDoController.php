@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\System\DmTrinhDo;
+use App\Models\HeThong\DmTrinhDo;
 use Illuminate\Http\Request;
 
 class DmTrinhDoController extends Controller

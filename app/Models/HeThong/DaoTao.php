@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\HeThong;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
-class Admin extends Model
+class DaoTao extends Model
 {
-    protected $table = 'admin';
+    protected $table = 'dao_tao';
 
     protected $fillable = [
         'user_id',

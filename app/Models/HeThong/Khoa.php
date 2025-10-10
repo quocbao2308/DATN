@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\HeThong;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Academic\Nganh;
-use App\Models\User\GiangVien;
+use App\Models\DaoTao\Nganh;
+use App\Models\NhanSu\GiangVien;
 
 class Khoa extends Model
 {

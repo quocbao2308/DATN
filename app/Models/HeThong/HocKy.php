@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\HeThong;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,7 +33,7 @@ class HocKy extends Model
      */
     public function lopHocPhans()
     {
-        return $this->hasMany(\App\Models\Academic\LopHocPhan::class, 'hoc_ky_id');
+        return $this->hasMany(\App\Models\DaoTao\LopHocPhan::class, 'hoc_ky_id');
     }
 
     public function bangDiems()

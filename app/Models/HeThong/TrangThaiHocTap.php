@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\HeThong;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DmTrinhDo extends Model
+class TrangThaiHocTap extends Model
 {
     use HasFactory;
 
-    protected $table = 'dm_trinh_do';
+    protected $table = 'trang_thai_hoc_tap';
 
     protected $fillable = [
-        'ten_trinh_do',
+        'ten_trang_thai',
     ];
 
     protected $casts = [
@@ -23,8 +23,8 @@ class DmTrinhDo extends Model
     /**
      * Relationships
      */
-    public function giangViens()
+    public function sinhViens()
     {
-        return $this->hasMany(\App\Models\User\GiangVien::class, 'trinh_do_id');
+        return $this->hasMany(\App\Models\NhanSu\SinhVien::class, 'trang_thai_hoc_tap_id');
     }
 }

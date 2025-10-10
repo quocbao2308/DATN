@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\System\Khoa;
+use App\Models\HeThong\Khoa;
 use Illuminate\Http\Request;
 
 class KhoaController extends Controller

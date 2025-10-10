@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\People;
+namespace App\Models\NhanSu;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,7 +23,7 @@ class GiangVien extends Model
      */
     public function khoa()
     {
-        return $this->belongsTo(\App\Models\Academic\Khoa::class, 'khoa_id');
+        return $this->belongsTo(\App\Models\DaoTao\Khoa::class, 'khoa_id');
     }
 
     /**
@@ -31,6 +31,6 @@ class GiangVien extends Model
      */
     public function trinhDo()
     {
-        return $this->belongsTo(\App\Models\System\DmTrinhDo::class, 'trinh_do_id');
+        return $this->belongsTo(\App\Models\HeThong\DmTrinhDo::class, 'trinh_do_id');
     }
 }

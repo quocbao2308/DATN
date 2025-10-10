@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Academic\Nganh;
-use App\Models\System\Khoa;
+use App\Models\DaoTao\Nganh;
+use App\Models\HeThong\Khoa;
 use Illuminate\Http\Request;
 
 class NganhController extends Controller

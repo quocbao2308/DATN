@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\System\KhoaHoc;
+use App\Models\HeThong\KhoaHoc;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 

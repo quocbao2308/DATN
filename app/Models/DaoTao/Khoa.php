@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Academic;
+namespace App\Models\DaoTao;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +25,6 @@ class Khoa extends Model
      */
     public function giangViens()
     {
-        return $this->hasMany(\App\Models\People\GiangVien::class, 'khoa_id');
+        return $this->hasMany(\App\Models\NhanSu\GiangVien::class, 'khoa_id');
     }
 }
