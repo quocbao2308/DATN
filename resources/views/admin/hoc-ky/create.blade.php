@@ -47,12 +47,12 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="hoc_ky" class="form-label">Học kỳ <span
+                                    <label for="ten_hoc_ky" class="form-label">Học kỳ <span
                                             class="text-danger">*</span></label>
-                                    <input type="number" class="form-control @error('hoc_ky') is-invalid @enderror"
-                                        name="hoc_ky" value="{{ old('hoc_ky', 1) }}" min="1" max="10"
-                                        required>
-                                    @error('hoc_ky')
+                                    <input type="text" class="form-control @error('ten_hoc_ky') is-invalid @enderror"
+                                        name="ten_hoc_ky" value="{{ old('ten_hoc_ky') }}" maxlength="100"
+                                        placeholder="Ví dụ: Kỳ 1 năm 2025" required>
+                                    @error('ten_hoc_ky')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>

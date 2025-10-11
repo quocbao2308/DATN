@@ -44,6 +44,12 @@
                             <select class="form-select @error('nganh_id') is-invalid @enderror" name="nganh_id"
                                 id="nganh_id" required>
                                 <option value="">-- Chọn khoa trước --</option>
+                                @foreach ($nganhs as $nganh)
+                                    <option value="{{ $nganh->id }}" data-khoa="{{ $nganh->khoa_id }}"
+                                        {{ old('nganh_id') == $nganh->id ? 'selected' : '' }}>
+                                        {{ $nganh->ten_nganh }}
+                                    </option>
+                                @endforeach
                             </select>
                             @error('nganh_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -75,27 +81,34 @@
     </div>
 
     <script>
+        // Dùng JavaScript đơn giản để show/hide options (không dùng API)
         document.getElementById('khoa_id').addEventListener('change', function() {
             const khoaId = this.value;
             const nganhSelect = document.getElementById('nganh_id');
+            const options = nganhSelect.options;
 
-            nganhSelect.innerHTML = '<option value="">-- Đang tải... --</option>';
+            // Reset về option đầu tiên
+            nganhSelect.value = '';
 
-            if (khoaId) {
-                fetch(`/api/nganh-by-khoa/${khoaId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        nganhSelect.innerHTML = '<option value="">-- Chọn ngành --</option>';
-                        data.forEach(nganh => {
-                            nganhSelect.innerHTML +=
-                                `<option value="${nganh.id}">${nganh.ten_nganh}</option>`;
-                        });
-                    })
-                    .catch(() => {
-                        nganhSelect.innerHTML = '<option value="">-- Lỗi tải dữ liệu --</option>';
-                    });
-            } else {
-                nganhSelect.innerHTML = '<option value="">-- Chọn khoa trước --</option>';
+            // Show/hide options dựa trên data-khoa attribute
+            for (let i = 1; i < options.length; i++) {
+                const option = options[i];
+                if (khoaId && option.getAttribute('data-khoa') == khoaId) {
+                    option.style.display = '';
+                } else if (khoaId) {
+                    option.style.display = 'none';
+                } else {
+                    option.style.display = 'none';
+                }
+            }
+        });
+
+        // Ẩn tất cả ngành khi page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const nganhSelect = document.getElementById('nganh_id');
+            const options = nganhSelect.options;
+            for (let i = 1; i < options.length; i++) {
+                options[i].style.display = 'none';
             }
         });
     </script>

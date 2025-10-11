@@ -14,6 +14,8 @@ class DaoTao extends Model
         'ho_ten',
         'email',
         'so_dien_thoai',
+        'phong_ban',
+        'anh_dai_dien',
         'dia_chi',
     ];
 

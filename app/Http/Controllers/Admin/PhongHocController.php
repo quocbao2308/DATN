@@ -115,6 +115,21 @@ class PhongHocController extends Controller
     public function destroy(string $id)
     {
         $phongHoc = PhongHoc::findOrFail($id);
+
+        // Kiểm tra có lịch học không
+        if ($phongHoc->lichHocs()->count() > 0) {
+            return redirect()
+                ->route('admin.phong-hoc.index')
+                ->with('error', 'Không thể xóa phòng này vì đang có lịch học!');
+        }
+
+        // Kiểm tra có lịch thi không
+        if ($phongHoc->lichThis()->count() > 0) {
+            return redirect()
+                ->route('admin.phong-hoc.index')
+                ->with('error', 'Không thể xóa phòng này vì đang có lịch thi!');
+        }
+
         $phongHoc->delete();
 
         return redirect()->route('admin.phong-hoc.index')

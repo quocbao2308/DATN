@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DaoTao\{ChuyenNganh, Nganh};
 use App\Models\HeThong\Khoa;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ChuyenNganhController extends Controller
 {
@@ -38,10 +39,18 @@ class ChuyenNganhController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'ten_chuyen_nganh' => 'required|string|max:255',
+            'ten_chuyen_nganh' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('chuyen_nganh')->where(function ($query) use ($request) {
+                    return $query->where('nganh_id', $request->nganh_id);
+                }),
+            ],
             'nganh_id' => 'required|exists:nganh,id',
         ], [
             'ten_chuyen_nganh.required' => 'Tên chuyên ngành không được để trống',
+            'ten_chuyen_nganh.unique' => 'Tên chuyên ngành đã tồn tại trong ngành này!',
             'nganh_id.required' => 'Vui lòng chọn ngành',
             'nganh_id.exists' => 'Ngành không tồn tại',
         ]);
@@ -78,10 +87,18 @@ class ChuyenNganhController extends Controller
     public function update(Request $request, ChuyenNganh $chuyenNganh)
     {
         $validated = $request->validate([
-            'ten_chuyen_nganh' => 'required|string|max:255',
+            'ten_chuyen_nganh' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('chuyen_nganh')->where(function ($query) use ($request) {
+                    return $query->where('nganh_id', $request->nganh_id);
+                })->ignore($chuyenNganh->id),
+            ],
             'nganh_id' => 'required|exists:nganh,id',
         ], [
             'ten_chuyen_nganh.required' => 'Tên chuyên ngành không được để trống',
+            'ten_chuyen_nganh.unique' => 'Tên chuyên ngành đã tồn tại trong ngành này!',
             'nganh_id.required' => 'Vui lòng chọn ngành',
             'nganh_id.exists' => 'Ngành không tồn tại',
         ]);

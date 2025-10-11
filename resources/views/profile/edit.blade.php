@@ -1,4 +1,4 @@
-@extends('layouts.layout-admin')
+@extends($role === 'Admin' ? 'layouts.layout-admin' : ($role === 'Đào tạo' ? 'layouts.layout-daotao' : ($role === 'Giảng viên' ? 'layouts.layout-giangvien' : ($role === 'Sinh viên' ? 'layouts.layout-sinhvien' : 'layouts.layout-admin'))))
 
 @section('content')
     <div class="page-heading">
@@ -11,12 +11,53 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
-                            <img src="{{ asset('assets/images/faces/1.jpg') }}" alt="Admin" class="rounded-circle"
-                                width="150">
+                            @if ($details && isset($details->anh_dai_dien) && $details->anh_dai_dien)
+                                <img src="{{ asset('storage/' . $details->anh_dai_dien) }}" alt="{{ $user->name }}"
+                                    class="rounded-circle" width="150" height="150"
+                                    style="object-fit: cover; border: 4px solid #e9ecef;">
+                            @else
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center"
+                                    style="width: 150px; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 60px; font-weight: bold; border: 4px solid #e9ecef;">
+                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                </div>
+                            @endif
                             <div class="mt-3">
                                 <h4>{{ $user->name }}</h4>
                                 <p class="text-secondary mb-1">{{ $role }}</p>
                                 <p class="text-muted font-size-sm">{{ $user->email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Phân Quyền -->
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3"><i class="bi bi-shield-lock"></i> Phân Quyền</h5>
+                        <div class="row mb-2">
+                            <div class="col-sm-5"><strong>Vai trò:</strong></div>
+                            <div class="col-sm-7">
+                                @if ($userRole)
+                                    <span class="badge bg-primary">{{ $userRole->ten_vai_tro }}</span>
+                                @else
+                                    <span class="text-muted">Chưa có vai trò</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5"><strong>Quyền:</strong></div>
+                            <div class="col-sm-7">
+                                @if ($permissions && count($permissions) > 0)
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach ($permissions as $permission)
+                                            <span class="badge bg-success" title="{{ $permission->ma_quyen }}">
+                                                {{ $permission->mo_ta }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-muted">Chưa có quyền</span>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -30,21 +71,13 @@
 
                             @if ($role === 'Admin')
                                 <div class="row mb-2">
-                                    <div class="col-sm-5"><strong>Mã Admin:</strong></div>
-                                    <div class="col-sm-7">{{ $details->ma_admin ?? 'N/A' }}</div>
-                                </div>
-                                <div class="row mb-2">
                                     <div class="col-sm-5"><strong>Số điện thoại:</strong></div>
-                                    <div class="col-sm-7">{{ $details->sdt ?? 'N/A' }}</div>
+                                    <div class="col-sm-7">{{ $details->so_dien_thoai ?? 'N/A' }}</div>
                                 </div>
                             @elseif($role === 'Đào tạo')
                                 <div class="row mb-2">
-                                    <div class="col-sm-5"><strong>Mã Đào tạo:</strong></div>
-                                    <div class="col-sm-7">{{ $details->ma_dao_tao ?? 'N/A' }}</div>
-                                </div>
-                                <div class="row mb-2">
                                     <div class="col-sm-5"><strong>Số điện thoại:</strong></div>
-                                    <div class="col-sm-7">{{ $details->sdt ?? 'N/A' }}</div>
+                                    <div class="col-sm-7">{{ $details->so_dien_thoai ?? 'N/A' }}</div>
                                 </div>
                             @elseif($role === 'Giảng viên')
                                 <div class="row mb-2">
@@ -61,7 +94,7 @@
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-sm-5"><strong>Số điện thoại:</strong></div>
-                                    <div class="col-sm-7">{{ $details->sdt ?? 'N/A' }}</div>
+                                    <div class="col-sm-7">{{ $details->so_dien_thoai ?? 'N/A' }}</div>
                                 </div>
                             @elseif($role === 'Sinh viên')
                                 <div class="row mb-2">
@@ -88,7 +121,7 @@
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-sm-5"><strong>Số điện thoại:</strong></div>
-                                    <div class="col-sm-7">{{ $details->sdt ?? 'N/A' }}</div>
+                                    <div class="col-sm-7">{{ $details->so_dien_thoai ?? 'N/A' }}</div>
                                 </div>
                             @endif
                         </div>

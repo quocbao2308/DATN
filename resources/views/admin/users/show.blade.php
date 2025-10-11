@@ -4,40 +4,41 @@
     <div class="container py-4">
         <h2>Chi tiết người dùng</h2>
 
-        {{-- DEBUG INFO --}}
-        @if (config('app.debug'))
-            <div class="alert alert-info">
-                <strong>🐛 DEBUG:</strong><br>
-                Role: {{ $role }}<br>
-                User ID: {{ $user->id }}<br>
-                User Email: {{ $user->email }}<br>
-                Details: {{ $details ? 'Có dữ liệu' : 'NULL' }}<br>
-                @if ($details)
-                    Details ID: {{ $details->id ?? 'N/A' }}<br>
-                    Email: {{ $details->email ?? 'N/A' }}
-                @endif
-            </div>
-        @endif
-
         <div class="row mt-4">
             <div class="col-md-4">
-                @if ($details && isset($details->anh_dai_dien) && $details->anh_dai_dien)
-                    <div class="card mb-3">
-                        <div class="card-body text-center">
+                {{-- Card ảnh đại diện --}}
+                <div class="card mb-3">
+                    <div class="card-body text-center">
+                        @if ($details && isset($details->anh_dai_dien) && $details->anh_dai_dien)
                             <img src="{{ asset('storage/' . $details->anh_dai_dien) }}" alt="Ảnh đại diện"
                                 class="img-fluid rounded-circle mb-3"
-                                style="max-width: 180px; max-height: 180px; object-fit: cover;">
-                            <h5>{{ $details->ho_ten }}</h5>
-                            @if ($role === 'Giảng viên')
-                                <p class="text-muted">{{ $details->ma_giang_vien }}</p>
-                            @endif
-                            @if ($role === 'Sinh viên')
-                                <p class="text-muted">{{ $details->ma_sinh_vien }}</p>
-                            @endif
-                        </div>
-                    </div>
-                @endif
+                                style="width: 180px; height: 180px; object-fit: cover; border: 4px solid #e9ecef;">
+                        @else
+                            {{-- Avatar mặc định với chữ cái đầu --}}
+                            <div class="rounded-circle mb-3 d-inline-flex align-items-center justify-content-center"
+                                style="width: 180px; height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 72px; font-weight: bold; border: 4px solid #e9ecef;">
+                                {{ $details ? strtoupper(substr($details->ho_ten, 0, 1)) : 'U' }}
+                            </div>
+                        @endif
 
+                        @if ($details)
+                            <h5 class="mb-1">{{ $details->ho_ten }}</h5>
+                            @if ($role === 'Admin')
+                                <p class="text-muted mb-0"><i class="fas fa-user-shield"></i> Quản trị viên</p>
+                            @elseif ($role === 'Đào tạo')
+                                <p class="text-muted mb-0"><i class="fas fa-graduation-cap"></i> Đào tạo</p>
+                            @elseif ($role === 'Giảng viên')
+                                <p class="text-muted mb-0"><i class="fas fa-chalkboard-teacher"></i>
+                                    {{ $details->ma_giang_vien }}</p>
+                            @elseif ($role === 'Sinh viên')
+                                <p class="text-muted mb-0"><i class="fas fa-user-graduate"></i> {{ $details->ma_sinh_vien }}
+                                </p>
+                            @endif
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Card thông tin đăng nhập --}}
                 <div class="card mb-3">
                     <div class="card-header">Thông tin đăng nhập</div>
                     <div class="card-body">

@@ -1,4 +1,4 @@
-<div id="sinhvien-form" style="display: none;">
+<div id="sinhvien-form" class="d-none">
     <h6 class="text-primary mt-4 mb-3">🎓 Thông tin Sinh viên</h6>
 
     {{-- THÔNG TIN HỌC TẬP --}}
@@ -241,14 +241,20 @@
         </div>
     </div>
 
-    {{-- ẢNH ĐẠI DIỆN --}}
-    <h6 class="text-secondary mt-3 mb-3">📷 Ảnh đại diện</h6>
+    {{-- ẢNH ĐẠI DIỆN - Chỉ admin mới sửa được cho sinh viên --}}
+    <h6 class="text-secondary mt-4 mb-3">📷 Ảnh đại diện</h6>
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i>
+        <strong>Lưu ý:</strong> Sinh viên không thể tự thay đổi ảnh đại diện. Chỉ Admin mới có quyền cập nhật.
+    </div>
+
     <div class="row">
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="form-label">Upload ảnh mới</label>
                 <input type="file" name="anh_dai_dien"
-                    class="form-control @error('anh_dai_dien') is-invalid @enderror" accept="image/*">
+                    class="form-control @error('anh_dai_dien') is-invalid @enderror"
+                    accept="image/jpeg,image/png,image/jpg,image/gif" onchange="previewSinhVienImage(this)">
                 @error('anh_dai_dien')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -256,50 +262,90 @@
             </div>
         </div>
 
-        @if (isset($roleData) && isset($roleData->anh_dai_dien) && $roleData->anh_dai_dien)
-            <div class="col-md-6">
-                <label class="form-label">Ảnh hiện tại</label>
-                <div>
+        <div class="col-md-6">
+            <label class="form-label">Ảnh hiện tại / Preview</label>
+            <div>
+                @if (isset($roleData) && isset($roleData->anh_dai_dien) && $roleData->anh_dai_dien)
                     <img src="{{ asset('storage/' . $roleData->anh_dai_dien) }}" alt="Ảnh đại diện"
-                        class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
-                </div>
+                        class="img-thumbnail" style="max-width: 200px; max-height: 200px; object-fit: cover;"
+                        id="sinhvien-avatar-preview">
+                @else
+                    <div class="rounded d-inline-flex align-items-center justify-content-center"
+                        style="width: 200px; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 72px; font-weight: bold;"
+                        id="sinhvien-avatar-placeholder">
+                        {{ isset($roleData) && isset($roleData->ho_ten) ? strtoupper(substr($roleData->ho_ten, 0, 1)) : 'S' }}
+                    </div>
+                    <img src="" alt="Preview" class="img-thumbnail d-none"
+                        style="max-width: 200px; max-height: 200px; object-fit: cover;" id="sinhvien-avatar-preview">
+                @endif
             </div>
-        @endif
+        </div>
     </div>
 </div>
 
 <script>
-    // Filter chuyên ngành theo ngành trong form edit
+    // Preview ảnh sinh viên
+    function previewSinhVienImage(input) {
+        const preview = document.getElementById('sinhvien-avatar-preview');
+        const placeholder = document.getElementById('sinhvien-avatar-placeholder');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+                if (placeholder) {
+                    placeholder.classList.add('d-none');
+                }
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+<script>
+    // Show/hide chuyên ngành theo ngành (không dùng JSON, filter, forEach)
     document.addEventListener('DOMContentLoaded', function() {
         const nganhSelect = document.getElementById('edit_nganh_id');
         const chuyenNganhSelect = document.getElementById('edit_chuyen_nganh_id');
 
-        if (nganhSelect && chuyenNganhSelect) {
-            const allChuyenNganhs = Array.from(chuyenNganhSelect.options);
+        if (!nganhSelect || !chuyenNganhSelect) return;
 
-            nganhSelect.addEventListener('change', function() {
-                const selectedNganhId = this.value;
+        const currentValue = chuyenNganhSelect.value; // Lưu giá trị hiện tại
 
-                // Reset và thêm option mặc định
-                chuyenNganhSelect.innerHTML = '<option value="">-- Chọn chuyên ngành --</option>';
+        nganhSelect.addEventListener('change', function() {
+            const selectedNganhId = this.value;
+            const options = chuyenNganhSelect.options;
 
-                // Filter và thêm các option phù hợp
-                allChuyenNganhs.forEach(option => {
-                    if (option.value && option.dataset.nganhId == selectedNganhId) {
-                        chuyenNganhSelect.appendChild(option.cloneNode(true));
-                    }
-                });
-            });
+            // Show/hide options dựa trên data-nganh-id
+            for (let i = 1; i < options.length; i++) {
+                const option = options[i];
+                const optionNganhId = option.getAttribute('data-nganh-id');
 
-            // Trigger để load chuyên ngành hiện tại
-            if (nganhSelect.value) {
-                nganhSelect.dispatchEvent(new Event('change'));
-
-                // Giữ lại chuyên ngành đã chọn
-                const selectedChuyenNganhId = "{{ old('chuyen_nganh_id', $roleData->chuyen_nganh_id ?? '') }}";
-                if (selectedChuyenNganhId) {
-                    chuyenNganhSelect.value = selectedChuyenNganhId;
+                if (selectedNganhId && optionNganhId == selectedNganhId) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
                 }
+            }
+
+            // Reset selection nếu option hiện tại bị ẩn
+            if (chuyenNganhSelect.value) {
+                const currentOption = chuyenNganhSelect.options[chuyenNganhSelect.selectedIndex];
+                if (currentOption.style.display === 'none') {
+                    chuyenNganhSelect.value = '';
+                }
+            }
+        });
+
+        // Khởi tạo - trigger change để hiển thị đúng options
+        if (nganhSelect.value) {
+            nganhSelect.dispatchEvent(new Event('change'));
+            // Khôi phục giá trị đã chọn
+            if (currentValue) {
+                chuyenNganhSelect.value = currentValue;
             }
         }
     });

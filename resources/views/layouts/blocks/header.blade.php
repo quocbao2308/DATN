@@ -10,8 +10,43 @@
         <div class="dropdown">
             <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown"
                 data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{{ asset('assets/images/faces/1.jpg') }}" alt="user" width="36" height="36"
-                    class="rounded-circle me-2">
+                @php
+                    $currentUser = Auth::user();
+                    $userAvatar = null;
+
+                    // Tìm ảnh đại diện từ bảng tương ứng
+                    if ($currentUser) {
+                        $admin = DB::table('admin')->where('email', $currentUser->email)->first();
+                        if ($admin && $admin->anh_dai_dien) {
+                            $userAvatar = $admin->anh_dai_dien;
+                        } else {
+                            $daoTao = DB::table('dao_tao')->where('email', $currentUser->email)->first();
+                            if ($daoTao && $daoTao->anh_dai_dien) {
+                                $userAvatar = $daoTao->anh_dai_dien;
+                            } else {
+                                $giangVien = DB::table('giang_vien')->where('email', $currentUser->email)->first();
+                                if ($giangVien && $giangVien->anh_dai_dien) {
+                                    $userAvatar = $giangVien->anh_dai_dien;
+                                } else {
+                                    $sinhVien = DB::table('sinh_vien')->where('email', $currentUser->email)->first();
+                                    if ($sinhVien && $sinhVien->anh_dai_dien) {
+                                        $userAvatar = $sinhVien->anh_dai_dien;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                @endphp
+
+                @if ($userAvatar)
+                    <img src="{{ asset('storage/' . $userAvatar) }}" alt="user" width="36" height="36"
+                        class="rounded-circle me-2" style="object-fit: cover;">
+                @else
+                    <div class="rounded-circle me-2 d-inline-flex align-items-center justify-content-center"
+                        style="width: 36px; height: 36px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 14px; font-weight: bold;">
+                        {{ strtoupper(substr($currentUser->name, 0, 1)) }}
+                    </div>
+                @endif
                 <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">

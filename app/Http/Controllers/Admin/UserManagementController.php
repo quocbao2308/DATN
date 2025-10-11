@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class UserManagementController extends Controller
 {
@@ -159,6 +160,14 @@ class UserManagementController extends Controller
         ];
 
         // Validation riêng cho từng vai trò
+        if ($request->role === 'admin') {
+            $rules['anh_dai_dien'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
+        }
+
+        if ($request->role === 'dao_tao') {
+            $rules['anh_dai_dien'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
+        }
+
         if ($request->role === 'giang_vien') {
             $rules['khoa_id'] = 'required|exists:khoa,id';
             $rules['trinh_do_id'] = 'required|exists:dm_trinh_do,id';
@@ -205,6 +214,9 @@ class UserManagementController extends Controller
             // 2. Tạo bản ghi vai trò tương ứng (truyền cả $request để có file upload)
             $this->assignRole($user, $validated['role'], $request->all());
 
+            // 3. Gán vai trò phân quyền mặc định
+            $this->assignDefaultPermissionRole($user->id, $validated['role']);
+
             DB::commit();
             return redirect()->route('admin.users.index', ['role' => $validated['role']])
                 ->with('success', 'Tạo tài khoản thành công!');
@@ -227,6 +239,7 @@ class UserManagementController extends Controller
         if ($role === 'Admin') {
             // Tìm theo cả user_id và email để đảm bảo tìm được
             $details = DB::table('admin')
+                ->select('admin.*')
                 ->where(function ($q) use ($user) {
                     $q->where('user_id', $user->id)
                         ->orWhere('email', $user->email);
@@ -234,6 +247,7 @@ class UserManagementController extends Controller
                 ->first();
         } elseif ($role === 'Đào tạo') {
             $details = DB::table('dao_tao')
+                ->select('dao_tao.*')
                 ->where(function ($q) use ($user) {
                     $q->where('user_id', $user->id)
                         ->orWhere('email', $user->email);
@@ -287,6 +301,16 @@ class UserManagementController extends Controller
             $roleData = DB::table('sinh_vien')->where('user_id', $user->id)->first();
         }
 
+        // Lấy thông tin vai trò và quyền hiện tại
+        $userRole = DB::table('tai_khoan_vai_tro')
+            ->join('vai_tro', 'tai_khoan_vai_tro.vai_tro_id', '=', 'vai_tro.id')
+            ->where('tai_khoan_vai_tro.tai_khoan_id', $user->id)
+            ->select('vai_tro.id', 'vai_tro.ten_vai_tro')
+            ->first();
+
+        // Lấy danh sách tất cả vai trò
+        $allVaiTros = DB::table('vai_tro')->orderBy('id')->get();
+
         // Lấy dữ liệu cho dropdown
         $khoas = DB::table('khoa')->select('id', 'ten_khoa')->orderBy('ten_khoa')->get();
         $nganhs = DB::table('nganh')->select('id', 'ten_nganh', 'khoa_id')->orderBy('ten_nganh')->get();
@@ -300,6 +324,8 @@ class UserManagementController extends Controller
             'currentRole',
             'roleKey',
             'roleData',
+            'userRole',
+            'allVaiTros',
             'khoas',
             'nganhs',
             'chuyenNganhs',
@@ -334,7 +360,6 @@ class UserManagementController extends Controller
             $rules['ma_giang_vien'] = 'required|unique:giang_vien,ma_giang_vien' . ($currentRoleKey === 'giang_vien' ? ',' . DB::table('giang_vien')->where('user_id', $user->id)->value('id') : '');
             $rules['chuyen_mon'] = 'nullable|string|max:255';
             $rules['ngay_vao_truong'] = 'nullable|date|before_or_equal:today';
-            $rules['anh_dai_dien'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
         }
 
         if ($request->role === 'sinh_vien') {
@@ -354,7 +379,7 @@ class UserManagementController extends Controller
             $rules['can_cuoc_cong_dan'] = 'nullable|string|size:12|unique:sinh_vien,can_cuoc_cong_dan' . ($currentRoleKey === 'sinh_vien' ? ',' . DB::table('sinh_vien')->where('user_id', $user->id)->value('id') : '');
             $rules['ngay_cap_cccd'] = 'nullable|date|before:today';
             $rules['noi_cap_cccd'] = 'nullable|string|max:255';
-            // Ảnh
+            // Ảnh đại diện - CHỈ admin mới được upload cho sinh viên
             $rules['anh_dai_dien'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
         }
 
@@ -372,12 +397,17 @@ class UserManagementController extends Controller
             // Nếu đổi vai trò → xóa vai trò cũ và tạo vai trò mới
             if ($currentRoleKey !== $validated['role']) {
                 $this->removeRole($user);
-                $this->assignRole($user, $validated['role'], $request->all());
+                $this->assignRole($user, $validated['role'], $request);
                 $message = 'Đổi vai trò và cập nhật thông tin thành công!';
             } else {
                 // Cùng vai trò → chỉ cập nhật thông tin
-                $this->updateRoleData($user, $validated['role'], $request->all());
+                $this->updateRoleData($user, $validated['role'], $request);
                 $message = 'Cập nhật thông tin thành công!';
+            }
+
+            // Cập nhật vai trò phân quyền nếu có
+            if ($request->has('vai_tro_id')) {
+                $this->updateUserPermissionRole($user->id, $request->vai_tro_id);
             }
 
             DB::commit();
@@ -447,11 +477,27 @@ class UserManagementController extends Controller
 
         switch ($role) {
             case 'admin':
-                DB::table('admin')->insert($baseData);
+                // Upload ảnh đại diện nếu có
+                $anhDaiDien = null;
+                if (isset($data['anh_dai_dien']) && $data['anh_dai_dien']->isValid()) {
+                    $anhDaiDien = $data['anh_dai_dien']->store('admin/avatar', 'public');
+                }
+
+                DB::table('admin')->insert(array_merge($baseData, [
+                    'anh_dai_dien' => $anhDaiDien,
+                ]));
                 break;
 
             case 'dao_tao':
-                DB::table('dao_tao')->insert($baseData);
+                // Upload ảnh đại diện nếu có
+                $anhDaiDien = null;
+                if (isset($data['anh_dai_dien']) && $data['anh_dai_dien']->isValid()) {
+                    $anhDaiDien = $data['anh_dai_dien']->store('dao_tao/avatar', 'public');
+                }
+
+                DB::table('dao_tao')->insert(array_merge($baseData, [
+                    'anh_dai_dien' => $anhDaiDien,
+                ]));
                 break;
 
             case 'giang_vien':
@@ -517,12 +563,12 @@ class UserManagementController extends Controller
     /**
      * Cập nhật thông tin vai trò (không đổi vai trò)
      */
-    private function updateRoleData($user, $role, $data)
+    private function updateRoleData($user, $role, $request)
     {
         $baseData = [
-            'ho_ten' => $data['ho_ten'],
+            'ho_ten' => $request->ho_ten,
             'email' => $user->email,
-            'so_dien_thoai' => $data['so_dien_thoai'] ?? null,
+            'so_dien_thoai' => $request->so_dien_thoai ?? null,
             'updated_at' => now(),
         ];
 
@@ -536,59 +582,96 @@ class UserManagementController extends Controller
                 break;
 
             case 'giang_vien':
-                // Xử lý upload ảnh mới nếu có
                 $updateData = array_merge($baseData, [
-                    'ma_giang_vien' => $data['ma_giang_vien'],
-                    'khoa_id' => $data['khoa_id'],
-                    'trinh_do_id' => $data['trinh_do_id'],
-                    'chuyen_mon' => $data['chuyen_mon'] ?? null,
-                    'ngay_vao_truong' => $data['ngay_vao_truong'] ?? null,
+                    'ma_giang_vien' => $request->ma_giang_vien,
+                    'khoa_id' => $request->khoa_id,
+                    'trinh_do_id' => $request->trinh_do_id,
+                    'chuyen_mon' => $request->chuyen_mon ?? null,
+                    'ngay_vao_truong' => $request->ngay_vao_truong ?? null,
                 ]);
-
-                if (isset($data['anh_dai_dien']) && $data['anh_dai_dien']->isValid()) {
-                    // Xóa ảnh cũ nếu có
-                    $oldRecord = DB::table('giang_vien')->where('user_id', $user->id)->first();
-                    if ($oldRecord && $oldRecord->anh_dai_dien) {
-                        Storage::disk('public')->delete($oldRecord->anh_dai_dien);
-                    }
-                    $updateData['anh_dai_dien'] = $data['anh_dai_dien']->store('giang_vien/avatar', 'public');
-                }
 
                 DB::table('giang_vien')->where('user_id', $user->id)->update($updateData);
                 break;
 
             case 'sinh_vien':
                 $updateData = array_merge($baseData, [
-                    'ma_sinh_vien' => $data['ma_sinh_vien'],
-                    'nganh_id' => $data['nganh_id'],
-                    'chuyen_nganh_id' => $data['chuyen_nganh_id'],
-                    'khoa_hoc_id' => $data['khoa_hoc_id'],
-                    'trang_thai_hoc_tap_id' => $data['trang_thai_hoc_tap_id'],
-                    'ngay_sinh' => $data['ngay_sinh'] ?? null,
-                    'gioi_tinh' => $data['gioi_tinh'] ?? null,
-                    'ky_hien_tai' => $data['ky_hien_tai'] ?? 1,
+                    'ma_sinh_vien' => $request->ma_sinh_vien,
+                    'nganh_id' => $request->nganh_id,
+                    'chuyen_nganh_id' => $request->chuyen_nganh_id,
+                    'khoa_hoc_id' => $request->khoa_hoc_id,
+                    'trang_thai_hoc_tap_id' => $request->trang_thai_hoc_tap_id,
+                    'ngay_sinh' => $request->ngay_sinh ?? null,
+                    'gioi_tinh' => $request->gioi_tinh ?? null,
+                    'ky_hien_tai' => $request->ky_hien_tai ?? 1,
                     // Địa chỉ
-                    'so_nha_duong' => $data['so_nha_duong'] ?? null,
-                    'phuong_xa' => $data['phuong_xa'] ?? null,
-                    'quan_huyen' => $data['quan_huyen'] ?? null,
-                    'tinh_thanh' => $data['tinh_thanh'] ?? null,
+                    'so_nha_duong' => $request->so_nha_duong ?? null,
+                    'phuong_xa' => $request->phuong_xa ?? null,
+                    'quan_huyen' => $request->quan_huyen ?? null,
+                    'tinh_thanh' => $request->tinh_thanh ?? null,
                     // CCCD
-                    'can_cuoc_cong_dan' => $data['can_cuoc_cong_dan'] ?? null,
-                    'ngay_cap_cccd' => $data['ngay_cap_cccd'] ?? null,
-                    'noi_cap_cccd' => $data['noi_cap_cccd'] ?? null,
+                    'can_cuoc_cong_dan' => $request->can_cuoc_cong_dan ?? null,
+                    'ngay_cap_cccd' => $request->ngay_cap_cccd ?? null,
+                    'noi_cap_cccd' => $request->noi_cap_cccd ?? null,
                 ]);
 
-                if (isset($data['anh_dai_dien']) && $data['anh_dai_dien']->isValid()) {
-                    // Xóa ảnh cũ
+                // Xử lý upload ảnh đại diện cho sinh viên (CHỈ admin mới upload được)
+                if ($request->hasFile('anh_dai_dien') && $request->file('anh_dai_dien')->isValid()) {
+                    // Xóa ảnh cũ nếu có
                     $oldRecord = DB::table('sinh_vien')->where('user_id', $user->id)->first();
                     if ($oldRecord && $oldRecord->anh_dai_dien) {
                         Storage::disk('public')->delete($oldRecord->anh_dai_dien);
                     }
-                    $updateData['anh_dai_dien'] = $data['anh_dai_dien']->store('sinh_vien/avatar', 'public');
+
+                    // Upload ảnh mới
+                    $file = $request->file('anh_dai_dien');
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $path = $file->storeAs('sinh-vien/avatars', $filename, 'public');
+                    $updateData['anh_dai_dien'] = $path;
                 }
 
                 DB::table('sinh_vien')->where('user_id', $user->id)->update($updateData);
                 break;
+        }
+    }
+
+    /**
+     * Cập nhật vai trò phân quyền của user
+     */
+    private function updateUserPermissionRole($userId, $vaiTroId): void
+    {
+        // Xóa vai trò cũ
+        DB::table('tai_khoan_vai_tro')->where('tai_khoan_id', $userId)->delete();
+
+        // Thêm vai trò mới
+        DB::table('tai_khoan_vai_tro')->insert([
+            'tai_khoan_id' => $userId,
+            'vai_tro_id' => $vaiTroId,
+        ]);
+
+        // Xóa cache quyền
+        \App\Helpers\PermissionHelper::clearUserPermissionsCache($userId);
+    }
+
+    /**
+     * Gán vai trò mặc định cho user mới
+     */
+    private function assignDefaultPermissionRole($userId, $role): void
+    {
+        // Map role sang vai_tro_id mặc định
+        $roleMap = [
+            'admin' => 2,           // Admin
+            'dao_tao' => 4,         // Nhân Viên Đào Tạo
+            'giang_vien' => 6,      // Giảng Viên
+            'sinh_vien' => 7,       // Sinh Viên
+        ];
+
+        $vaiTroId = $roleMap[$role] ?? null;
+
+        if ($vaiTroId) {
+            DB::table('tai_khoan_vai_tro')->insert([
+                'tai_khoan_id' => $userId,
+                'vai_tro_id' => $vaiTroId,
+            ]);
         }
     }
 }

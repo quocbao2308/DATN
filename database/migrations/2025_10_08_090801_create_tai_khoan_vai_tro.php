@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tai_khoan_vai_tro', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tai_khoan_id')->constrained('tai_khoan');
-            $table->foreignId('vai_tro_id')->constrained('vai_tro');
+            $table->foreignId('tai_khoan_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('vai_tro_id')->constrained('vai_tro')->onDelete('cascade');
             $table->unique(['tai_khoan_id', 'vai_tro_id']);
         });
     }

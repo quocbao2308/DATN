@@ -49,10 +49,14 @@
     <div class="col-md-4">
         <div class="form-group mb-3">
             <label class="form-label">Ngành <span class="text-danger">*</span></label>
-            <select id="nganh_id" name="nganh_id" class="form-select @error('nganh_id') is-invalid @enderror" required
-                disabled>
+            <select id="nganh_id" name="nganh_id" class="form-select @error('nganh_id') is-invalid @enderror" required>
                 <option value="">-- Chọn khoa trước --</option>
-                {{-- Options sẽ được thêm động bằng JavaScript --}}
+                @foreach ($nganhs as $nganh)
+                    <option value="{{ $nganh->id }}" data-khoa="{{ $nganh->khoa_id }}"
+                        {{ old('nganh_id') == $nganh->id ? 'selected' : '' }}>
+                        {{ $nganh->ten_nganh }}
+                    </option>
+                @endforeach
             </select>
             @error('nganh_id')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -65,9 +69,14 @@
         <div class="form-group mb-3">
             <label class="form-label">Chuyên ngành <span class="text-danger">*</span></label>
             <select id="chuyen_nganh_id" name="chuyen_nganh_id"
-                class="form-select @error('chuyen_nganh_id') is-invalid @enderror" required disabled>
+                class="form-select @error('chuyen_nganh_id') is-invalid @enderror" required>
                 <option value="">-- Chọn ngành trước --</option>
-                {{-- Options sẽ được thêm động bằng JavaScript --}}
+                @foreach ($chuyenNganhs as $cn)
+                    <option value="{{ $cn->id }}" data-nganh="{{ $cn->nganh_id }}"
+                        {{ old('chuyen_nganh_id') == $cn->id ? 'selected' : '' }}>
+                        {{ $cn->ten_chuyen_nganh }}
+                    </option>
+                @endforeach
             </select>
             @error('chuyen_nganh_id')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -282,78 +291,85 @@
 </div>
 
 <script>
-    // Data từ server
-    const allNganhs = @json($nganhs);
-    const allChuyenNganhs = @json($chuyenNganhs);
-    const oldKhoaId = "{{ old('khoa_id') }}";
-    const oldNganhId = "{{ old('nganh_id') }}";
-    const oldChuyenNganhId = "{{ old('chuyen_nganh_id') }}";
-
+    // JavaScript đơn giản để show/hide options dựa trên data-* attributes (không dùng API/JSON)
     document.addEventListener('DOMContentLoaded', function() {
         const khoaSelect = document.getElementById('khoa_id');
         const nganhSelect = document.getElementById('nganh_id');
         const chuyenNganhSelect = document.getElementById('chuyen_nganh_id');
 
-        if (!khoaSelect || !nganhSelect || !chuyenNganhSelect) {
-            return;
-        }
+        if (!khoaSelect || !nganhSelect || !chuyenNganhSelect) return;
 
-        console.log('✅ Data loaded:', allNganhs.length, 'ngành,', allChuyenNganhs.length, 'chuyên ngành');
+        // Hàm show/hide ngành theo khoa
+        function updateNganhs() {
+            const khoaId = khoaSelect.value;
+            const nganhOptions = nganhSelect.options;
+            const currentNganhValue = nganhSelect.value;
+            let hasVisibleOption = false;
 
-        // Cập nhật Ngành
-        function updateNganhs(khoaId) {
-            nganhSelect.innerHTML = '<option value="">-- Chọn ngành --</option>';
+            // Show/hide options
+            for (let i = 1; i < nganhOptions.length; i++) {
+                const option = nganhOptions[i];
+                const optionKhoaId = option.getAttribute('data-khoa');
 
+                if (khoaId && optionKhoaId == khoaId) {
+                    option.style.display = '';
+                    hasVisibleOption = true;
+                } else {
+                    option.style.display = 'none';
+                    if (option.value == currentNganhValue) {
+                        nganhSelect.value = '';
+                    }
+                }
+            }
+
+            // Update first option text và reset chuyên ngành
             if (!khoaId) {
+                nganhOptions[0].textContent = '-- Chọn khoa trước --';
                 nganhSelect.disabled = true;
-                nganhSelect.querySelector('option').textContent = '-- Chọn khoa trước --';
-                updateChuyenNganhs('');
-                return;
-            }
-
-            const filtered = allNganhs.filter(n => n.khoa_id == khoaId);
-            filtered.forEach(nganh => {
-                const opt = new Option(nganh.ten_nganh, nganh.id, false, oldNganhId == nganh.id);
-                nganhSelect.add(opt);
-            });
-
-            nganhSelect.disabled = false;
-            console.log('→ Hiển thị', filtered.length, 'ngành');
-
-            if (oldNganhId && nganhSelect.value) {
-                updateChuyenNganhs(nganhSelect.value);
             } else {
-                updateChuyenNganhs('');
+                nganhOptions[0].textContent = '-- Chọn ngành --';
+                nganhSelect.disabled = false;
             }
+
+            updateChuyenNganhs();
         }
 
-        // Cập nhật Chuyên ngành
-        function updateChuyenNganhs(nganhId) {
-            chuyenNganhSelect.innerHTML = '<option value="">-- Chọn chuyên ngành --</option>';
+        // Hàm show/hide chuyên ngành theo ngành
+        function updateChuyenNganhs() {
+            const nganhId = nganhSelect.value;
+            const cnOptions = chuyenNganhSelect.options;
+            const currentCnValue = chuyenNganhSelect.value;
 
+            // Show/hide options
+            for (let i = 1; i < cnOptions.length; i++) {
+                const option = cnOptions[i];
+                const optionNganhId = option.getAttribute('data-nganh');
+
+                if (nganhId && optionNganhId == nganhId) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                    if (option.value == currentCnValue) {
+                        chuyenNganhSelect.value = '';
+                    }
+                }
+            }
+
+            // Update first option text
             if (!nganhId) {
+                cnOptions[0].textContent = '-- Chọn ngành trước --';
                 chuyenNganhSelect.disabled = true;
-                chuyenNganhSelect.querySelector('option').textContent = '-- Chọn ngành trước --';
-                return;
+            } else {
+                cnOptions[0].textContent = '-- Chọn chuyên ngành --';
+                chuyenNganhSelect.disabled = false;
             }
-
-            const filtered = allChuyenNganhs.filter(cn => cn.nganh_id == nganhId);
-            filtered.forEach(cn => {
-                const opt = new Option(cn.ten_chuyen_nganh, cn.id, false, oldChuyenNganhId == cn.id);
-                chuyenNganhSelect.add(opt);
-            });
-
-            chuyenNganhSelect.disabled = false;
-            console.log('→ Hiển thị', filtered.length, 'chuyên ngành');
         }
 
-        // Events
-        khoaSelect.addEventListener('change', () => updateNganhs(khoaSelect.value));
-        nganhSelect.addEventListener('change', () => updateChuyenNganhs(nganhSelect.value));
+        // Event listeners
+        khoaSelect.addEventListener('change', updateNganhs);
+        nganhSelect.addEventListener('change', updateChuyenNganhs);
 
-        // Khởi tạo
-        if (oldKhoaId) {
-            updateNganhs(oldKhoaId);
-        }
+        // Khởi tạo ban đầu
+        updateNganhs();
     });
 </script>

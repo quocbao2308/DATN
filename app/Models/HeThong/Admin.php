@@ -14,6 +14,7 @@ class Admin extends Model
         'ho_ten',
         'email',
         'so_dien_thoai',
+        'anh_dai_dien',
         'dia_chi',
     ];
 

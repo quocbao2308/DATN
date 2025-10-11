@@ -12,11 +12,13 @@ class HocKy extends Model
     protected $table = 'hoc_ky';
 
     protected $fillable = [
+        'khoa_hoc_id',
         'ten_hoc_ky',
         'nam_bat_dau',
         'nam_ket_thuc',
         'ngay_bat_dau',
         'ngay_ket_thuc',
+        'mo_ta',
     ];
 
     protected $casts = [
@@ -31,6 +33,11 @@ class HocKy extends Model
     /**
      * Relationships
      */
+    public function khoaHoc()
+    {
+        return $this->belongsTo(KhoaHoc::class, 'khoa_hoc_id');
+    }
+
     public function lopHocPhans()
     {
         return $this->hasMany(\App\Models\DaoTao\LopHocPhan::class, 'hoc_ky_id');

@@ -114,45 +114,4 @@
             </form>
         </section>
     </div>
-
-    @push('scripts')
-        <script>
-            // Auto load ngành khi chọn khoa (cho sinh viên)
-            @if ($role === 'sinh_vien')
-                const nganhsData = @json($nganhs);
-                const chuyenNganhsData = @json($chuyenNganhs);
-
-                document.getElementById('khoa_id')?.addEventListener('change', function() {
-                    const khoaId = this.value;
-                    const nganhSelect = document.getElementById('nganh_id');
-                    const chuyenNganhSelect = document.getElementById('chuyen_nganh_id');
-
-                    // Reset
-                    nganhSelect.innerHTML = '<option value="">-- Chọn ngành --</option>';
-                    chuyenNganhSelect.innerHTML = '<option value="">-- Chọn chuyên ngành --</option>';
-
-                    // Load ngành theo khoa
-                    const filteredNganhs = nganhsData.filter(n => n.khoa_id == khoaId);
-                    filteredNganhs.forEach(nganh => {
-                        nganhSelect.innerHTML += `<option value="${nganh.id}">${nganh.ten_nganh}</option>`;
-                    });
-                });
-
-                document.getElementById('nganh_id')?.addEventListener('change', function() {
-                    const nganhId = this.value;
-                    const chuyenNganhSelect = document.getElementById('chuyen_nganh_id');
-
-                    // Reset
-                    chuyenNganhSelect.innerHTML = '<option value="">-- Chọn chuyên ngành --</option>';
-
-                    // Load chuyên ngành theo ngành
-                    const filteredChuyenNganhs = chuyenNganhsData.filter(cn => cn.nganh_id == nganhId);
-                    filteredChuyenNganhs.forEach(cn => {
-                        chuyenNganhSelect.innerHTML +=
-                            `<option value="${cn.id}">${cn.ten_chuyen_nganh}</option>`;
-                    });
-                });
-            @endif
-        </script>
-    @endpush
 @endsection

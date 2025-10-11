@@ -60,7 +60,7 @@
                                     <td>{{ $hocKys->firstItem() + $index }}</td>
                                     <td><span class="badge bg-secondary">{{ $hocKy->khoaHoc->ten_khoa_hoc ?? 'N/A' }}</span>
                                     </td>
-                                    <td><strong>Học kỳ {{ $hocKy->hoc_ky }}</strong></td>
+                                    <td><strong>{{ $hocKy->ten_hoc_ky }}</strong></td>
                                     <td>{{ \Carbon\Carbon::parse($hocKy->ngay_bat_dau)->format('d/m/Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($hocKy->ngay_ket_thuc)->format('d/m/Y') }}</td>
                                     <td>

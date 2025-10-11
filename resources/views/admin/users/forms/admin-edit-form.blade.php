@@ -1,7 +1,7 @@
-<div id="admin-form" style="display: none;">
+<div id="admin-form" class="d-none">
     <h6 class="text-primary mt-4 mb-3">🔐 Thông tin Quản trị viên</h6>
-    <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i>
-        Quản trị viên chỉ cần thông tin cơ bản (họ tên, email, số điện thoại).
-    </div>
+    <p class="text-muted mb-3">
+        <i class="bi bi-info-circle"></i> Để cập nhật ảnh đại diện, vui lòng sử dụng chức năng <strong>Hồ sơ cá
+            nhân</strong>
+    </p>
 </div>

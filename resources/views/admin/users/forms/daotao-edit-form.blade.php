@@ -1,7 +1,7 @@
-<div id="daotao-form" style="display: none;">
+<div id="daotao-form" class="d-none">
     <h6 class="text-primary mt-4 mb-3">📋 Thông tin Đào tạo</h6>
-    <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i>
-        Cán bộ đào tạo chỉ cần thông tin cơ bản (họ tên, email, số điện thoại).
-    </div>
+    <p class="text-muted mb-3">
+        <i class="bi bi-info-circle"></i> Để cập nhật ảnh đại diện, vui lòng sử dụng chức năng <strong>Hồ sơ cá
+            nhân</strong>
+    </p>
 </div>

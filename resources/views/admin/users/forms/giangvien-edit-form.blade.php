@@ -1,4 +1,4 @@
-<div id="giangvien-form" style="display: none;">
+<div id="giangvien-form" class="d-none">
     <h6 class="text-primary mt-4 mb-3">💼 Thông tin Giảng viên</h6>
 
     <div class="row">
@@ -81,29 +81,8 @@
         </div>
     </div>
 
-    {{-- Ảnh đại diện --}}
-    <h6 class="text-primary mt-3 mb-3">📷 Ảnh đại diện</h6>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group mb-3">
-                <label class="form-label">Upload ảnh mới</label>
-                <input type="file" name="anh_dai_dien"
-                    class="form-control @error('anh_dai_dien') is-invalid @enderror" accept="image/*">
-                @error('anh_dai_dien')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-                <small class="text-muted">Để trống nếu không muốn đổi ảnh. Định dạng: JPG, PNG, GIF. Tối đa 2MB</small>
-            </div>
-        </div>
-
-        @if (isset($roleData) && isset($roleData->anh_dai_dien) && $roleData->anh_dai_dien)
-            <div class="col-md-6">
-                <label class="form-label">Ảnh hiện tại</label>
-                <div>
-                    <img src="{{ asset('storage/' . $roleData->anh_dai_dien) }}" alt="Ảnh đại diện"
-                        class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
-                </div>
-            </div>
-        @endif
-    </div>
+    <p class="text-muted mt-3">
+        <i class="bi bi-info-circle"></i> Để cập nhật ảnh đại diện, vui lòng sử dụng chức năng <strong>Hồ sơ cá
+            nhân</strong>
+    </p>
 </div>

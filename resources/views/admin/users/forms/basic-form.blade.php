@@ -19,4 +19,16 @@
             @enderror
         </div>
     </div>
+
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label class="form-label">Ảnh đại diện</label>
+            <input type="file" name="anh_dai_dien" class="form-control @error('anh_dai_dien') is-invalid @enderror"
+                accept="image/jpeg,image/png,image/jpg,image/gif">
+            @error('anh_dai_dien')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+            <small class="text-muted">Chấp nhận: JPG, JPEG, PNG, GIF. Tối đa: 2MB</small>
+        </div>
+    </div>
 </div>
