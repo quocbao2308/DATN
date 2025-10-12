@@ -34,29 +34,13 @@
                 <div class="card mt-3">
                     <div class="card-body">
                         <h5 class="card-title mb-3"><i class="bi bi-shield-lock"></i> Phân Quyền</h5>
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="col-sm-5"><strong>Vai trò:</strong></div>
                             <div class="col-sm-7">
                                 @if ($userRole)
                                     <span class="badge bg-primary">{{ $userRole->ten_vai_tro }}</span>
                                 @else
                                     <span class="text-muted">Chưa có vai trò</span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-5"><strong>Quyền:</strong></div>
-                            <div class="col-sm-7">
-                                @if ($permissions && count($permissions) > 0)
-                                    <div class="d-flex flex-wrap gap-1">
-                                        @foreach ($permissions as $permission)
-                                            <span class="badge bg-success" title="{{ $permission->ma_quyen }}">
-                                                {{ $permission->mo_ta }}
-                                            </span>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <span class="text-muted">Chưa có quyền</span>
                                 @endif
                             </div>
                         </div>
