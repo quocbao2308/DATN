@@ -1,11 +1,7 @@
 <footer>
     <div class="footer clearfix mb-0 text-muted">
-        <div class="float-start">
-            <p>2021 &copy; Mazer</p>
-        </div>
-        <div class="float-end">
-            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                    href="http://ahmadsaugi.com">A. Saugi</a></p>
+        <div class="text-center">
+            <p>{{ date('Y') }} &copy; S-MIS - Student Management Information System</p>
         </div>
     </div>
 </footer>

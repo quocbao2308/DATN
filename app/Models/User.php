@@ -45,4 +45,36 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the admin record associated with the user.
+     */
+    public function admin()
+    {
+        return $this->hasOne(\App\Models\HeThong\Admin::class, 'user_id');
+    }
+
+    /**
+     * Get the dao tao record associated with the user.
+     */
+    public function daoTao()
+    {
+        return $this->hasOne(\App\Models\HeThong\DaoTao::class, 'user_id');
+    }
+
+    /**
+     * Get the giang vien record associated with the user.
+     */
+    public function giangVien()
+    {
+        return $this->hasOne(\App\Models\NhanSu\GiangVien::class, 'user_id');
+    }
+
+    /**
+     * Get the sinh vien record associated with the user.
+     */
+    public function sinhVien()
+    {
+        return $this->hasOne(\App\Models\NhanSu\SinhVien::class, 'user_id');
+    }
 }

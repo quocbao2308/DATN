@@ -13,8 +13,12 @@ class PhongHoc extends Model
 
     protected $fillable = [
         'ma_phong',
+        'ten_phong',
         'suc_chua',
         'vi_tri',
+        'loai_phong',
+        'trang_thai',
+        'mo_ta',
     ];
 
     protected $casts = [

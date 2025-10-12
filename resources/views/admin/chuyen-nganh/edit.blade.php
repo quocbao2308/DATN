@@ -48,7 +48,7 @@
                             <select class="form-select @error('nganh_id') is-invalid @enderror" name="nganh_id"
                                 id="nganh_id" required>
                                 @foreach ($nganhs as $nganh)
-                                    <option value="{{ $nganh->id }}"
+                                    <option value="{{ $nganh->id }}" data-khoa="{{ $nganh->khoa_id }}"
                                         {{ old('nganh_id', $chuyenNganh->nganh_id) == $nganh->id ? 'selected' : '' }}>
                                         {{ $nganh->ten_nganh }}
                                     </option>
@@ -89,20 +89,50 @@
     </div>
 
     <script>
+        // Dùng JavaScript đơn giản để show/hide options (không dùng API)
+        const currentKhoaId = {{ $chuyenNganh->nganh->khoa_id }};
+
         document.getElementById('khoa_id').addEventListener('change', function() {
             const khoaId = this.value;
             const nganhSelect = document.getElementById('nganh_id');
+            const options = nganhSelect.options;
+            const currentValue = nganhSelect.value;
 
-            if (khoaId) {
-                fetch(`/api/nganh-by-khoa/${khoaId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        nganhSelect.innerHTML = '<option value="">-- Chọn ngành --</option>';
-                        data.forEach(nganh => {
-                            nganhSelect.innerHTML +=
-                                `<option value="${nganh.id}">${nganh.ten_nganh}</option>`;
-                        });
-                    });
+            // Show/hide options dựa trên data-khoa attribute
+            for (let i = 0; i < options.length; i++) {
+                const option = options[i];
+                const optionKhoaId = option.getAttribute('data-khoa');
+
+                if (optionKhoaId && khoaId && optionKhoaId == khoaId) {
+                    option.style.display = '';
+                } else if (optionKhoaId && khoaId) {
+                    option.style.display = 'none';
+                    // Reset nếu option hiện tại bị ẩn
+                    if (option.value == currentValue) {
+                        nganhSelect.value = '';
+                    }
+                } else if (!khoaId && optionKhoaId) {
+                    option.style.display = 'none';
+                }
+            }
+        });
+
+        // Hiển thị đúng options khi page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const khoaSelect = document.getElementById('khoa_id');
+            const khoaId = khoaSelect.value;
+            const nganhSelect = document.getElementById('nganh_id');
+            const options = nganhSelect.options;
+
+            for (let i = 0; i < options.length; i++) {
+                const option = options[i];
+                const optionKhoaId = option.getAttribute('data-khoa');
+
+                if (optionKhoaId && khoaId && optionKhoaId == khoaId) {
+                    option.style.display = '';
+                } else if (optionKhoaId) {
+                    option.style.display = 'none';
+                }
             }
         });
     </script>

@@ -14,8 +14,8 @@ class Admin extends Model
         'ho_ten',
         'email',
         'so_dien_thoai',
+        'anh_dai_dien',
         'dia_chi',
-        'vai_tro_id',
     ];
 
     /**
@@ -24,13 +24,5 @@ class Admin extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    /**
-     * Vai trò
-     */
-    public function vaiTro()
-    {
-        return $this->belongsTo(VaiTro::class, 'vai_tro_id');
     }
 }

@@ -1,0 +1,360 @@
+// ======================== ENUMS ========================
+Enum gioi_tinh_enum {
+  nam
+  nu
+  khac
+}
+
+Enum hinh_thuc_enum {
+  offline
+  online
+  hybrid
+}
+
+Enum trang_thai_lop_enum {
+  mo_dang_ky
+  dang_hoc
+  ket_thuc
+  huy
+}
+
+Enum trang_thai_diem_danh_enum {
+  co_mat
+  vang
+  di_tre
+  nghi_phep
+}
+
+// ======================== Tài Khoản ========================
+Table users {
+  id int [pk]
+  name varchar [not null]
+  email varchar [not null, unique]
+  password varchar [not null]
+  email_verified_at datetime
+  remember_token varchar
+  created_at timestamp
+  updated_at timestamp
+  note: 'Bảng users mặc định của Laravel, quản lý đăng nhập'
+}
+
+Table vai_tro {
+  id int [pk]
+  ten_vai_tro varchar [not null, unique] // Admin, Trưởng Phòng Đào Tạo, Nhân Viên Đào Tạo, Giảng Viên Chủ Nhiệm, Giảng Viên, Sinh Viên
+}
+
+Table tai_khoan_vai_tro {
+  id int [pk]
+  tai_khoan_id int [ref: > users.id, note: 'Reference tới users.id']
+  vai_tro_id int [ref: > vai_tro.id]
+  indexes { (tai_khoan_id, vai_tro_id) [unique] }
+}
+
+Table quyen {
+  id int [pk]
+  ma_quyen varchar [not null, unique]
+  mo_ta varchar
+}
+
+Table vai_tro_quyen {
+  id int [pk]
+  vai_tro_id int [ref: > vai_tro.id]
+  quyen_id int [ref: > quyen.id]
+  indexes { (vai_tro_id, quyen_id) [unique] }
+}
+
+// ======================== Nhân sự hệ thống ========================
+Table admin {
+  id int [pk]
+  ho_ten varchar
+  email varchar [unique]
+  so_dien_thoai varchar
+  anh_dai_dien varchar [note: 'Ảnh đại diện của admin']
+  user_id int [ref: > users.id, note: 'Foreign key tới bảng users']
+}
+
+Table dao_tao {
+  id int [pk]
+  ho_ten varchar
+  email varchar [unique]
+  so_dien_thoai varchar
+  anh_dai_dien varchar [note: 'Ảnh đại diện của đào tạo']
+  user_id int [ref: > users.id, note: 'Foreign key tới bảng users']
+}
+
+// ======================== Sinh viên ========================
+Table sinh_vien {
+  id int [pk]
+  ma_sinh_vien varchar [not null, unique]
+  ho_ten varchar [not null]
+  email varchar [not null, unique]
+  ngay_sinh date
+  gioi_tinh gioi_tinh_enum
+  so_dien_thoai varchar
+  so_nha_duong varchar
+  phuong_xa varchar
+  quan_huyen varchar
+  tinh_thanh varchar
+  can_cuoc_cong_dan varchar [unique]
+  ngay_cap_cccd date
+  noi_cap_cccd varchar
+  anh_dai_dien varchar
+  khoa_hoc_id int [ref: > khoa_hoc.id]
+  nganh_id int [ref: > nganh.id]
+  chuyen_nganh_id int [ref: > chuyen_nganh.id]
+  ky_hien_tai int
+  trang_thai_hoc_tap_id int [ref: > trang_thai_hoc_tap.id]
+  user_id int [ref: > users.id, note: 'Foreign key tới bảng users']
+}
+
+// ======================== GV========================
+Table giang_vien {
+  id int [pk]
+  ma_giang_vien varchar [not null, unique]
+  ho_ten varchar [not null]
+  email varchar [not null, unique]
+  so_dien_thoai varchar
+  trinh_do_id int [ref: > dm_trinh_do.id]
+  chuyen_mon varchar
+  khoa_id int [ref: > khoa.id]
+  ngay_vao_truong date
+  anh_dai_dien varchar
+  user_id int [ref: > users.id, note: 'Foreign key tới bảng users']
+}
+
+Table dm_trinh_do {
+  id int [pk]
+  ten_trinh_do varchar [not null, unique]
+}
+
+// ======================== Môn học và học phần ========================
+Table mon_hoc {
+  id int [pk]
+  ma_mon varchar [not null, unique]
+  ten_mon varchar [not null]
+  so_tin_chi int
+  mo_ta text
+  loai_mon varchar
+  hinh_thuc_day hinh_thuc_enum
+  thoi_luong int
+  so_buoi int
+}
+
+Table mon_hoc_tien_quyet {
+  mon_hoc_id int [ref: > mon_hoc.id]
+  mon_tien_quyet_id int [ref: > mon_hoc.id]
+  indexes { (mon_hoc_id, mon_tien_quyet_id) [pk] }
+}
+
+Table lop_hoc_phan {
+  id int [pk]
+  ma_lop_hp varchar [not null, unique]
+  mon_hoc_id int [ref: > mon_hoc.id]
+  hoc_ky_id int [ref: > hoc_ky.id]
+  suc_chua int
+  hinh_thuc hinh_thuc_enum
+  link_online varchar
+  ghi_chu text
+  trang_thai_lop trang_thai_lop_enum
+}
+
+Table lop_hoc_phan_giang_vien {
+  lop_hoc_phan_id int [ref: > lop_hoc_phan.id]
+  giang_vien_id int [ref: > giang_vien.id]
+  vai_tro varchar
+  indexes { (lop_hoc_phan_id, giang_vien_id) [pk] }
+}
+
+// ======================== Lịch========================
+Table lich_hoc {
+  id int [pk]
+  lop_hoc_phan_id int [ref: > lop_hoc_phan.id]
+  ngay date
+  gio_bat_dau time
+  gio_ket_thuc time
+  phong_hoc_id int [ref: > phong_hoc.id]
+  hinh_thuc_buoi_hoc hinh_thuc_enum
+  link_online varchar
+  giang_vien_phu_trach int [ref: > giang_vien.id]
+  ghi_chu text
+  indexes { (ngay, gio_bat_dau, phong_hoc_id) [unique] }
+}
+
+Table lich_thi {
+  id int [pk]
+  lop_hoc_phan_id int [ref: > lop_hoc_phan.id]
+  ngay_thi date
+  gio_bat_dau time
+  gio_ket_thuc time
+  phong_hoc_id int [ref: > phong_hoc.id]
+  hinh_thuc hinh_thuc_enum
+  link_online varchar
+  file_pdf varchar
+  ngay_gui datetime
+}
+
+// ======================== Điểm, đăng ký ========================
+Table dang_ky_mon_hoc {
+  id int [pk]
+  sinh_vien_id int [ref: > sinh_vien.id]
+  lop_hoc_phan_id int [ref: > lop_hoc_phan.id]
+  ngay_dang_ky datetime
+  diem_he_10 float
+  diem_he_4 float
+  diem_chu varchar
+  qua_mon boolean [default: false]
+  indexes { (sinh_vien_id, lop_hoc_phan_id) [unique] }
+}
+
+Table cau_hinh_dau_diem {
+  id int [pk]
+  lop_hoc_phan_id int [ref: > lop_hoc_phan.id]
+  ten_dau_diem varchar [not null]
+  ty_le float
+  indexes { (lop_hoc_phan_id, ten_dau_diem) [unique] }
+}
+
+Table nhap_diem {
+  id int [pk]
+  sinh_vien_id int [ref: > sinh_vien.id]
+  cau_hinh_id int [ref: > cau_hinh_dau_diem.id]
+  diem_so float
+  indexes { (sinh_vien_id, cau_hinh_id) [unique] }
+}
+
+Table bang_diem {
+  id int [pk]
+  sinh_vien_id int [ref: > sinh_vien.id]
+  hoc_ky_id int [ref: > hoc_ky.id]
+  diem_trung_binh_hoc_ky float
+  diem_trung_binh_tich_luy float
+  tong_tin_chi_dat int
+  indexes { (sinh_vien_id, hoc_ky_id) [unique] }
+}
+
+Table diem_danh {
+  id int [pk]
+  sinh_vien_id int [ref: > sinh_vien.id]
+  lich_hoc_id int [ref: > lich_hoc.id]
+  trang_thai trang_thai_diem_danh_enum
+  ngay_diem_danh datetime
+  indexes { (sinh_vien_id, lich_hoc_id) [unique] }
+}
+
+// ======================== Danh Mục, cấu trúc ct ========================
+Table khoa {
+  id int [pk]
+  ten_khoa varchar [not null, unique]
+}
+
+Table nganh {
+  id int [pk]
+  ten_nganh varchar [not null]
+  khoa_id int [ref: > khoa.id]
+  indexes { (ten_nganh, khoa_id) [unique] }
+}
+
+Table chuyen_nganh {
+  id int [pk]
+  ten_chuyen_nganh varchar [not null]
+  nganh_id int [ref: > nganh.id]
+  indexes { (ten_chuyen_nganh, nganh_id) [unique] }
+}
+
+Table chuong_trinh_khung {
+  id int [pk]
+  chuyen_nganh_id int [ref: > chuyen_nganh.id]
+  mon_hoc_id int [ref: > mon_hoc.id]
+  hoc_ky_goi_y int
+  loai_mon_hoc varchar
+  indexes { (chuyen_nganh_id, mon_hoc_id) [unique] }
+}
+
+// ======================== Thời gian địa điểm ========================
+Table khoa_hoc {
+  id int [pk]
+  ten_khoa_hoc varchar [not null]
+  nam_bat_dau int
+  nam_ket_thuc int
+  mo_ta text [note: 'Mô tả khóa học']
+}
+
+Table hoc_ky {
+  id int [pk]
+  khoa_hoc_id int [ref: > khoa_hoc.id]
+  ten_hoc_ky varchar [not null]
+  nam_bat_dau int
+  nam_ket_thuc int
+  ngay_bat_dau date
+  ngay_ket_thuc date
+  mo_ta text [note: 'Mô tả học kỳ']
+  indexes { (ten_hoc_ky, khoa_hoc_id) [unique] }
+}
+
+// ======================== Học phí, trạng thái ========================
+Table phong_hoc {
+  id int [pk]
+  ma_phong varchar [not null, unique]
+  ten_phong varchar [not null]
+  suc_chua int
+  vi_tri varchar
+  loai_phong varchar [note: 'Lý thuyết, Thực hành, Hội trường, Phòng máy']
+  trang_thai varchar [default: 'Hoạt động', note: 'Hoạt động, Bảo trì, Không sử dụng']
+  mo_ta text
+}
+
+Table hoc_phi {
+  id int [pk]
+  sinh_vien_id int [ref: > sinh_vien.id]
+  hoc_ky_id int [ref: > hoc_ky.id]
+  so_tien float
+  ngay_nop datetime
+}
+
+Table trang_thai_hoc_tap {
+  id int [pk]
+  ten_trang_thai varchar [not null, unique]
+}
+
+// ======================== Chat bot========================
+Table ai_chatbot_knowledge_base {
+  id int [pk]
+  chu_de varchar
+  cau_hoi_mau text
+  cau_tra_loi text [not null]
+  tu_khoa varchar
+  ngay_cap_nhat datetime
+}
+
+Table ai_chatbot_log {
+  id int [pk]
+  sinh_vien_id int [ref: > sinh_vien.id]
+  session_id varchar
+  cau_hoi_user text
+  cau_tra_loi_bot text
+  do_hai_long int
+  thoi_gian timestamp [default: `now()`]
+}
+
+// ======================== Thông báo========================
+Table thong_bao {
+  id int [pk]
+  tieu_de varchar [not null]
+  noi_dung text [not null]
+  doi_tuong varchar [note: 'sinh_vien, giang_vien, dao_tao, all']
+  loai_thong_bao varchar [note: 'hoc_phi, diem, lich_hoc, he_thong']
+  nguoi_gui_id int [ref: > users.id]
+  ngay_gui datetime
+  ngay_het_han datetime
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table nguoi_nhan_thong_bao {
+  id int [pk]
+  thong_bao_id int [ref: > thong_bao.id]
+  nguoi_nhan_id int [ref: > users.id]
+  da_doc boolean [default: false]
+  ngay_doc datetime
+  indexes { (thong_bao_id, nguoi_nhan_id) [unique] }
+}

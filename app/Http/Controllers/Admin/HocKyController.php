@@ -17,7 +17,7 @@ class HocKyController extends Controller
     {
         $hocKys = HocKy::with('khoaHoc')
             ->orderBy('khoa_hoc_id', 'desc')
-            ->orderBy('hoc_ky', 'asc')
+            ->orderBy('ten_hoc_ky', 'asc')
             ->paginate(15);
 
         return view('admin.hoc-ky.index', compact('hocKys'));
@@ -39,11 +39,10 @@ class HocKyController extends Controller
     {
         $validated = $request->validate([
             'khoa_hoc_id' => 'required|exists:khoa_hoc,id',
-            'hoc_ky' => [
+            'ten_hoc_ky' => [
                 'required',
-                'integer',
-                'min:1',
-                'max:10',
+                'string',
+                'max:100',
                 Rule::unique('hoc_ky')->where(function ($query) use ($request) {
                     return $query->where('khoa_hoc_id', $request->khoa_hoc_id);
                 })
@@ -54,8 +53,8 @@ class HocKyController extends Controller
         ], [
             'khoa_hoc_id.required' => 'Khóa học không được để trống',
             'khoa_hoc_id.exists' => 'Khóa học không tồn tại',
-            'hoc_ky.required' => 'Học kỳ không được để trống',
-            'hoc_ky.unique' => 'Học kỳ này đã tồn tại trong khóa học',
+            'ten_hoc_ky.required' => 'Tên học kỳ không được để trống',
+            'ten_hoc_ky.unique' => 'Tên học kỳ này đã tồn tại trong khóa học',
             'ngay_bat_dau.required' => 'Ngày bắt đầu không được để trống',
             'ngay_ket_thuc.required' => 'Ngày kết thúc không được để trống',
             'ngay_ket_thuc.after' => 'Ngày kết thúc phải sau ngày bắt đầu',
@@ -95,11 +94,10 @@ class HocKyController extends Controller
 
         $validated = $request->validate([
             'khoa_hoc_id' => 'required|exists:khoa_hoc,id',
-            'hoc_ky' => [
+            'ten_hoc_ky' => [
                 'required',
-                'integer',
-                'min:1',
-                'max:10',
+                'string',
+                'max:100',
                 Rule::unique('hoc_ky')->where(function ($query) use ($request) {
                     return $query->where('khoa_hoc_id', $request->khoa_hoc_id);
                 })->ignore($hocKy->id)
@@ -109,7 +107,7 @@ class HocKyController extends Controller
             'mo_ta' => 'nullable|string|max:500',
         ], [
             'khoa_hoc_id.required' => 'Khóa học không được để trống',
-            'hoc_ky.unique' => 'Học kỳ này đã tồn tại trong khóa học',
+            'ten_hoc_ky.unique' => 'Tên học kỳ này đã tồn tại trong khóa học',
             'ngay_ket_thuc.after' => 'Ngày kết thúc phải sau ngày bắt đầu',
         ]);
 
@@ -125,6 +123,25 @@ class HocKyController extends Controller
     public function destroy(string $id)
     {
         $hocKy = HocKy::findOrFail($id);
+
+        // Kiểm tra có lớp học phần không
+        if ($hocKy->lopHocPhans()->count() > 0) {
+            return redirect()->route('admin.hoc-ky.index')
+                ->with('error', 'Không thể xóa học kỳ này vì đang có lớp học phần!');
+        }
+
+        // Kiểm tra có bảng điểm không
+        if ($hocKy->bangDiems()->count() > 0) {
+            return redirect()->route('admin.hoc-ky.index')
+                ->with('error', 'Không thể xóa học kỳ này vì đang có bảng điểm!');
+        }
+
+        // Kiểm tra có học phí không
+        if ($hocKy->hocPhis()->count() > 0) {
+            return redirect()->route('admin.hoc-ky.index')
+                ->with('error', 'Không thể xóa học kỳ này vì đang có học phí!');
+        }
+
         $hocKy->delete();
 
         return redirect()->route('admin.hoc-ky.index')

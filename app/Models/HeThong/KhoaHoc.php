@@ -15,6 +15,7 @@ class KhoaHoc extends Model
         'ten_khoa_hoc',
         'nam_bat_dau',
         'nam_ket_thuc',
+        'mo_ta',
     ];
 
     protected $casts = [

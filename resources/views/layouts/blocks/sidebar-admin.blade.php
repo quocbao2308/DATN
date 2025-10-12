@@ -3,8 +3,9 @@
         <div class="sidebar-header">
             <div class="d-flex justify-content-between">
                 <div class="logo">
-                    <a href="{{ route('admin.dashboard') }}"><img src="{{ asset('assets/images/logo/logo.png') }}"
-                            alt="Logo" srcset=""></a>
+                    <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center">
+                        <h4 class="mb-0 text-primary fw-bold">S-MIS</h4>
+                    </a>
                 </div>
                 <div class="toggler">
                     <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>

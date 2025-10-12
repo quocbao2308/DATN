@@ -53,9 +53,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Quản lý Người dùng
-    Route::resource('users', UserManagementController::class);
-
-    // Quản lý Danh mục
+    Route::resource('users', UserManagementController::class);    // Quản lý Danh mục
     Route::resource('khoa', KhoaController::class);
     Route::resource('nganh', NganhController::class);
     Route::resource('chuyen-nganh', ChuyenNganhController::class);
@@ -87,10 +85,5 @@ Route::prefix('sinh-vien')->name('sinh-vien.')->middleware(['auth'])->group(func
     Route::get('/dashboard', [SinhVienDashboardController::class, 'index'])->name('dashboard');
     // Thêm routes khác cho Sinh viên ở đây...
 });
-
-// API for hierarchical selects
-Route::get('/api/nganh-by-khoa/{khoa_id}', function ($khoa_id) {
-    return \App\Models\DaoTao\Nganh::where('khoa_id', $khoa_id)->get(['id', 'ten_nganh']);
-})->middleware('auth');
 
 require __DIR__ . '/auth.php';

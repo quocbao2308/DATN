@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DaoTao\Nganh;
 use App\Models\HeThong\Khoa;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class NganhController extends Controller
 {
@@ -16,7 +17,7 @@ class NganhController extends Controller
     {
         $nganhs = Nganh::with('khoa')
             ->withCount(['chuyenNganhs', 'sinhViens'])
-            ->latest()
+            ->orderBy('id', 'desc')
             ->paginate(15);
 
         return view('admin.nganh.index', compact('nganhs'));
@@ -37,10 +38,18 @@ class NganhController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'ten_nganh' => 'required|string|max:255',
+            'ten_nganh' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('nganh')->where(function ($query) use ($request) {
+                    return $query->where('khoa_id', $request->khoa_id);
+                }),
+            ],
             'khoa_id' => 'required|exists:khoa,id',
         ], [
             'ten_nganh.required' => 'Tên ngành không được để trống',
+            'ten_nganh.unique' => 'Tên ngành đã tồn tại trong khoa này!',
             'khoa_id.required' => 'Vui lòng chọn khoa',
             'khoa_id.exists' => 'Khoa không tồn tại',
         ]);
@@ -76,10 +85,18 @@ class NganhController extends Controller
     public function update(Request $request, Nganh $nganh)
     {
         $validated = $request->validate([
-            'ten_nganh' => 'required|string|max:255',
+            'ten_nganh' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('nganh')->where(function ($query) use ($request) {
+                    return $query->where('khoa_id', $request->khoa_id);
+                })->ignore($nganh->id),
+            ],
             'khoa_id' => 'required|exists:khoa,id',
         ], [
             'ten_nganh.required' => 'Tên ngành không được để trống',
+            'ten_nganh.unique' => 'Tên ngành đã tồn tại trong khoa này!',
             'khoa_id.required' => 'Vui lòng chọn khoa',
             'khoa_id.exists' => 'Khoa không tồn tại',
         ]);

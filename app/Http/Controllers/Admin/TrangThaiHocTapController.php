@@ -14,7 +14,7 @@ class TrangThaiHocTapController extends Controller
     public function index()
     {
         $trangThais = TrangThaiHocTap::withCount('sinhViens')
-            ->latest()
+            ->orderBy('id', 'desc')
             ->paginate(15);
 
         return view('admin.trang-thai-hoc-tap.index', compact('trangThais'));
