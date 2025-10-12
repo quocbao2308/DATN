@@ -71,7 +71,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 // Đào tạo Routes
 Route::prefix('dao-tao')->name('dao-tao.')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DaoTaoDashboardController::class, 'index'])->name('dashboard');
-    // Thêm routes khác cho Đào tạo ở đây...
+    
+    // Quản lý Sinh viên
+    Route::resource('sinh-vien', \App\Http\Controllers\DaoTao\SinhVienController::class);
+    
+    // Quản lý Giảng viên
+    Route::resource('giang-vien', \App\Http\Controllers\DaoTao\GiangVienController::class);
 });
 
 // Giảng viên Routes

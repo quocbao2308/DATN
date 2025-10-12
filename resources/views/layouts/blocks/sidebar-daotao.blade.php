@@ -24,6 +24,22 @@
 
                 <li class="sidebar-title">Chức năng Đào Tạo</li>
 
+                {{-- Sinh viên --}}
+                <li class="sidebar-item {{ request()->is('dao-tao/sinh-vien*') ? 'active' : '' }}">
+                    <a href="{{ route('dao-tao.sinh-vien.index') }}" class='sidebar-link'>
+                        <i class="bi bi-people-fill"></i>
+                        <span>Sinh viên</span>
+                    </a>
+                </li>
+
+                {{-- Giảng viên --}}
+                <li class="sidebar-item {{ request()->is('dao-tao/giang-vien*') ? 'active' : '' }}">
+                    <a href="{{ route('dao-tao.giang-vien.index') }}" class='sidebar-link'>
+                        <i class="bi bi-person-badge-fill"></i>
+                        <span>Giảng viên</span>
+                    </a>
+                </li>
+
                 <li class="sidebar-item">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-journal-text"></i>
