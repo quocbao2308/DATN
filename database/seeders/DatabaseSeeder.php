@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             DmTrinhDoSeeder::class,
             TrangThaiHocTapSeeder::class,
             KhoaHocSeeder::class,
+            HocKySeeder::class,
 
             // 2. Users và phân quyền
             UserSeeder::class,
