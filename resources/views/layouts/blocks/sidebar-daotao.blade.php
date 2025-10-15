@@ -39,6 +39,13 @@
                         <span>Giảng viên</span>
                     </a>
                 </li>
+                         {{-- Lớp học phần --}}
+                <li class="sidebar-item {{ request()->is('dao-tao/lop-hoc-phan*') ? 'active' : '' }}">
+                    <a href="{{ route('dao-tao.lop-hoc-phan.index') }}" class='sidebar-link'>
+                        <i class="bi bi-book-half"></i>
+                        <span>Lớp học phần</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-item">
                     <a href="#" class='sidebar-link'>
