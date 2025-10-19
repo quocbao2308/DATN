@@ -13,7 +13,7 @@ class LichHocSeeder extends Seeder
         $data = [
             // --- Các bản ghi cũ ---
             [
-                'lop_hoc_phan_id' => 8,
+                'lop_hoc_phan_id' => 1,
                 'ngay' => '2025-10-20',
                 'gio_bat_dau' => '07:30:00',
                 'gio_ket_thuc' => '09:30:00',
@@ -26,7 +26,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'lop_hoc_phan_id' => 9,
+                'lop_hoc_phan_id' => 2,
                 'ngay' => '2025-10-22',
                 'gio_bat_dau' => '09:45:00',
                 'gio_ket_thuc' => '11:45:00',
@@ -39,7 +39,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'lop_hoc_phan_id' => 10,
+                'lop_hoc_phan_id' => 3,
                 'ngay' => '2025-10-23',
                 'gio_bat_dau' => '13:30:00',
                 'gio_ket_thuc' => '15:30:00',
@@ -52,7 +52,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'lop_hoc_phan_id' => 11,
+                'lop_hoc_phan_id' => 4,
                 'ngay' => '2025-10-24',
                 'gio_bat_dau' => '15:45:00',
                 'gio_ket_thuc' => '17:45:00',
@@ -65,7 +65,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'lop_hoc_phan_id' => 10,
+                'lop_hoc_phan_id' => 3,
                 'ngay' => '2025-10-27',
                 'gio_bat_dau' => '07:30:00',
                 'gio_ket_thuc' => '09:30:00',
@@ -80,7 +80,7 @@ class LichHocSeeder extends Seeder
 
             // --- 10 bản ghi mới ---
             [
-                'lop_hoc_phan_id' => 11,
+                'lop_hoc_phan_id' => 1,
                 'ngay' => '2025-10-28',
                 'gio_bat_dau' => '08:00:00',
                 'gio_ket_thuc' => '10:00:00',
@@ -93,7 +93,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'lop_hoc_phan_id' => 11,
+                'lop_hoc_phan_id' => 1,
                 'ngay' => '2025-10-30',
                 'gio_bat_dau' => '08:00:00',
                 'gio_ket_thuc' => '10:00:00',
@@ -106,7 +106,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'lop_hoc_phan_id' => 8,
+                'lop_hoc_phan_id' => 4,
                 'ngay' => '2025-10-29',
                 'gio_bat_dau' => '13:00:00',
                 'gio_ket_thuc' => '15:00:00',
@@ -119,7 +119,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'lop_hoc_phan_id' => 9,
+                'lop_hoc_phan_id' => 3,
                 'ngay' => '2025-11-01',
                 'gio_bat_dau' => '13:00:00',
                 'gio_ket_thuc' => '15:00:00',
@@ -132,7 +132,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'lop_hoc_phan_id' => 9,
+                'lop_hoc_phan_id' => 3,
                 'ngay' => '2025-10-31',
                 'gio_bat_dau' => '07:30:00',
                 'gio_ket_thuc' => '09:30:00',
@@ -145,7 +145,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'lop_hoc_phan_id' => 10,
+                'lop_hoc_phan_id' => 4,
                 'ngay' => '2025-11-03',
                 'gio_bat_dau' => '07:30:00',
                 'gio_ket_thuc' => '09:30:00',
@@ -158,7 +158,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'lop_hoc_phan_id' => 11,
+                'lop_hoc_phan_id' => 3,
                 'ngay' => '2025-11-04',
                 'gio_bat_dau' => '09:45:00',
                 'gio_ket_thuc' => '11:45:00',
@@ -171,7 +171,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'lop_hoc_phan_id' => 10,
+                'lop_hoc_phan_id' => 1,
                 'ngay' => '2025-11-05',
                 'gio_bat_dau' => '13:30:00',
                 'gio_ket_thuc' => '15:30:00',
@@ -184,7 +184,7 @@ class LichHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'lop_hoc_phan_id' => 11,
+                'lop_hoc_phan_id' => 1,
                 'ngay' => '2025-11-07',
                 'gio_bat_dau' => '13:30:00',
                 'gio_ket_thuc' => '15:30:00',
@@ -198,6 +198,7 @@ class LichHocSeeder extends Seeder
             ],
         ];
 
-        DB::table('lich_hoc')->insert($data);
+        // Use insertOrIgnore to avoid crashing on duplicate unique constraint when seeding repeatedly
+        DB::table('lich_hoc')->insertOrIgnore($data);
     }
 }

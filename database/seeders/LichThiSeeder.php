@@ -12,7 +12,7 @@ class LichThiSeeder extends Seeder
     {
         DB::table('lich_thi')->insert([
             [
-                'lop_hoc_phan_id' => 8,
+                'lop_hoc_phan_id' => 4,
                 'ngay_thi' => '2025-12-10',
                 'gio_bat_dau' => '08:00:00',
                 'gio_ket_thuc' => '10:00:00',
@@ -23,7 +23,7 @@ class LichThiSeeder extends Seeder
                 'ngay_gui' => Carbon::now(),
             ],
             [
-                'lop_hoc_phan_id' => 9,
+                'lop_hoc_phan_id' => 3,
                 'ngay_thi' => '2025-12-11',
                 'gio_bat_dau' => '13:30:00',
                 'gio_ket_thuc' => '15:30:00',
@@ -34,7 +34,7 @@ class LichThiSeeder extends Seeder
                 'ngay_gui' => Carbon::now(),
             ],
             [
-                'lop_hoc_phan_id' => 10,
+                'lop_hoc_phan_id' => 1,
                 'ngay_thi' => '2025-12-12',
                 'gio_bat_dau' => '09:00:00',
                 'gio_ket_thuc' => '11:00:00',
@@ -45,7 +45,7 @@ class LichThiSeeder extends Seeder
                 'ngay_gui' => Carbon::now(),
             ],
             [
-                'lop_hoc_phan_id' => 11,
+                'lop_hoc_phan_id' => 2,
                 'ngay_thi' => '2025-12-13',
                 'gio_bat_dau' => '07:30:00',
                 'gio_ket_thuc' => '09:30:00',
@@ -56,7 +56,7 @@ class LichThiSeeder extends Seeder
                 'ngay_gui' => Carbon::now(),
             ],
             [
-                'lop_hoc_phan_id' => 11,
+                'lop_hoc_phan_id' => 4,
                 'ngay_thi' => '2025-12-14',
                 'gio_bat_dau' => '10:00:00',
                 'gio_ket_thuc' => '12:00:00',
@@ -67,7 +67,7 @@ class LichThiSeeder extends Seeder
                 'ngay_gui' => Carbon::now(),
             ],
             [
-                'lop_hoc_phan_id' => 9,
+                'lop_hoc_phan_id' => 2,
                 'ngay_thi' => '2025-12-15',
                 'gio_bat_dau' => '14:00:00',
                 'gio_ket_thuc' => '16:00:00',

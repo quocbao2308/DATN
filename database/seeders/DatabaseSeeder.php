@@ -24,9 +24,14 @@ class DatabaseSeeder extends Seeder
             TrangThaiHocTapSeeder::class,
             KhoaHocSeeder::class,
             HocKySeeder::class,
-
-            // 2. Users và phân quyền
+            MonHocSeeder::class,
+            LopHocPhanSeeder::class,
+            // Ensure rooms and users (giang_vien) exist before seeding schedules
+            PhongHocSeeder::class,
+            // 2. Users và phân quyền (creates giang_vien, sinh_vien, admin etc.)
             UserSeeder::class,
+            LichHocSeeder::class,
+            LichThiSeeder::class,
         ]);
     }
 }
