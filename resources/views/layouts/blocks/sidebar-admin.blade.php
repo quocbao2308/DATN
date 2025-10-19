@@ -75,12 +75,27 @@
                     </ul>
                 </li>
 
-                <li class="sidebar-item {{ request()->is('admin/phong-hoc*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.phong-hoc.index') }}" class='sidebar-link'>
+                <li class="sidebar-item has-sub {{ request()->is('admin/phong-hoc*') ? 'active' : '' }}">
+                    <a href="#" class="sidebar-link">
                         <i class="bi bi-door-open"></i>
                         <span>Quản lý Phòng học</span>
                     </a>
+
+                    <ul class="submenu {{ request()->is('admin/phong-hoc*') ? 'submenu-open' : '' }}">
+                        <li class="submenu-item {{ request()->is('admin/phong-hoc') ? 'active' : '' }}">
+                            <a href="{{ route('admin.phong-hoc.index') }}">
+                                Danh sách phòng
+                            </a>
+                        </li>
+                        <li class="submenu-item {{ request()->is('admin/phong-hoc/create') ? 'active' : '' }}">
+                            <a href="{{ route('admin.phong-hoc.create') }}">
+                                Thêm phòng học
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
+
             </ul>
         </div>
     </div>
