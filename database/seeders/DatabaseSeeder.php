@@ -16,10 +16,17 @@ class DatabaseSeeder extends Seeder
         // Seeder theo thứ tự phụ thuộc
         // 
         $this->call([
-            MonHocSeeder::class,
-            LichHocSeeder::class,
-            LopHocPhanSeeder::class,
-            LichThiSeeder::class,
+            // 1. Danh mục cơ bản
+            KhoaSeeder::class,
+            NganhSeeder::class,
+            ChuyenNganhSeeder::class,
+            DmTrinhDoSeeder::class,
+            TrangThaiHocTapSeeder::class,
+            KhoaHocSeeder::class,
+            HocKySeeder::class,
+
+            // 2. Users và phân quyền
+            UserSeeder::class,
         ]);
     }
 }

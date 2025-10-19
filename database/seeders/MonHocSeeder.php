@@ -4,19 +4,21 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+
 use Carbon\Carbon;
 
 class MonHocSeeder extends Seeder
 {
+
     public function run(): void
     {
         DB::table('mon_hoc')->insert([
             [
-                'ma_mon' => 'MH001',
-                'ten_mon' => 'Lập trình C++ cơ bản',
+                'ma_mon' => 'CT101',
+                'ten_mon' => 'Lập Trình Cơ Bản',
                 'so_tin_chi' => 3,
-                'mo_ta' => 'Học các kiến thức nền tảng về ngôn ngữ lập trình C++, bao gồm biến, hàm, cấu trúc điều khiển và mảng.',
-                'loai_mon' => 'Chuyên ngành cơ bản',
+                'mo_ta' => 'Môn học giới thiệu về ngôn ngữ lập trình và cấu trúc cơ bản của chương trình.',
+                'loai_mon' => 'Bắt buộc',
                 'hinh_thuc_day' => 'offline',
                 'thoi_luong' => 45,
                 'so_buoi' => 15,

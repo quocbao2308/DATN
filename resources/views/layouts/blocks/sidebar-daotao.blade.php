@@ -39,6 +39,13 @@
                         <span>Giảng viên</span>
                     </a>
                 </li>
+                {{-- Lớp học phần --}}
+                <li class="sidebar-item {{ request()->is('dao-tao/lop-hoc-phan*') ? 'active' : '' }}">
+                    <a href="{{ route('dao-tao.lop-hoc-phan.index') }}" class='sidebar-link'>
+                        <i class="bi bi-book-half"></i>
+                        <span>Lớp học phần</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-item">
                     <a href="#" class='sidebar-link'>
@@ -47,15 +54,16 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item has-sub {{ request()->is('dao-tao/lich-hoc*') || request()->is('dao-tao/lich-thi*') ? 'active' : '' }}">
+                <li
+                    class="sidebar-item has-sub {{ request()->is('dao-tao/lich-hoc*') || request()->is('dao-tao/lich-thi*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-calendar-check"></i>
                         <span>Quản lý Lịch</span>
                     </a>
-                    <ul class="submenu {{ request()->is('dao-tao/lich-hoc*') || request()->is('dao-tao/lich-thi*') ? 'active' : '' }}">
-                        <li class="submenu-item {{ request()->is('dao-tao/lich-hoc*') ? 'active' : '' }}">
-                            <a href="{{ route('dao-tao.lop-hoc-phan.index') }}">Lớp học phần</a>
-                        </li>
+
+                    <ul
+                        class="submenu {{ request()->is('dao-tao/lich-hoc*') || request()->is('dao-tao/lich-thi*')  ? 'active' : '' }}">
+
                         <li class="submenu-item {{ request()->is('dao-tao/lich-hoc*') ? 'active' : '' }}">
                             <a href="{{ route('dao-tao.lich-hoc.index') }}">Lịch học</a>
                         </li>
@@ -64,6 +72,7 @@
                         </li>
                     </ul>
                 </li>
+
 
                 <li class="sidebar-item">
                     <a href="#" class='sidebar-link'>
