@@ -20,7 +20,8 @@ class NotificationManagementController extends Controller
         $type = $request->get('type');
         $role = $request->get('role');
 
-        $notifications = ThongBao::with(['nguoiNhan', 'nguoiTao'])
+        // Lấy tất cả thông báo theo điều kiện lọc
+        $query = ThongBao::with(['nguoiNhan', 'nguoiTao'])
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('tieu_de', 'like', "%{$search}%")
@@ -33,8 +34,44 @@ class NotificationManagementController extends Controller
             ->when($role, function ($query, $role) {
                 $query->where('vai_tro_nhan', $role);
             })
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->orderBy('created_at', 'desc');
+
+        // Nhóm thông báo theo batch_id HOẶC theo nội dung giống nhau
+        $allNotifications = $query->get()->groupBy(function ($notification) {
+            // Nếu có batch_id thì nhóm theo batch_id
+            if ($notification->batch_id) {
+                return 'batch_' . $notification->batch_id;
+            }
+            // Nếu không có batch_id, nhóm theo nội dung giống nhau (tieu_de + noi_dung + created_at trong cùng phút)
+            $groupKey = md5($notification->tieu_de . $notification->noi_dung . $notification->created_at->format('Y-m-d H:i'));
+            return 'content_' . $groupKey;
+        })->map(function ($group) {
+            $first = $group->first();
+            $count = $group->count();
+
+            // Nếu nhóm có nhiều hơn 1 thông báo, đánh dấu là batch
+            if ($count > 1) {
+                $first->recipient_count = $count;
+                $first->read_count = $group->where('da_doc', true)->count();
+                $first->is_batch = true;
+                $first->recipients = $group->pluck('nguoiNhan')->filter(); // Danh sách người nhận
+            } else {
+                $first->is_batch = false;
+            }
+
+            return $first;
+        })->values();
+
+        // Phân trang thủ công
+        $currentPage = request()->get('page', 1);
+        $perPage = 15;
+        $notifications = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allNotifications->forPage($currentPage, $perPage),
+            $allNotifications->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
 
         // Thống kê
         $stats = [
@@ -134,23 +171,76 @@ class NotificationManagementController extends Controller
     /**
      * Display the specified notification.
      */
-    public function show(ThongBao $notification)
+    public function show($id)
     {
-        $notification->load(['nguoiNhan', 'nguoiTao']);
-        return view('admin.notifications.show', compact('notification'));
+        $notification = ThongBao::with(['nguoiNhan', 'nguoiTao'])->findOrFail($id);
+        
+        // Lấy tất cả thông báo trong cùng batch (nếu là batch)
+        $recipients = collect();
+        if ($notification->batch_id) {
+            // Nhóm theo batch_id
+            $recipients = ThongBao::with('nguoiNhan')
+                ->where('batch_id', $notification->batch_id)
+                ->orderBy('da_doc', 'asc')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            // Nhóm theo nội dung giống nhau (cùng thời gian gửi)
+            $groupKey = md5($notification->tieu_de . $notification->noi_dung . $notification->created_at->format('Y-m-d H:i'));
+            $recipients = ThongBao::with('nguoiNhan')
+                ->where('tieu_de', $notification->tieu_de)
+                ->where('noi_dung', $notification->noi_dung)
+                ->whereBetween('created_at', [
+                    $notification->created_at->copy()->subMinute(),
+                    $notification->created_at->copy()->addMinute()
+                ])
+                ->orderBy('da_doc', 'asc')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+        
+        $isBatch = $recipients->count() > 1;
+        
+        return view('admin.notifications.show', compact('notification', 'recipients', 'isBatch'));
     }
 
     /**
      * Remove the specified notification from storage.
      */
-    public function destroy(ThongBao $notification)
+    public function destroy($id)
     {
         try {
-            $notification->delete();
+            $notification = ThongBao::findOrFail($id);
+            
+            // Nếu thông báo thuộc một batch, xóa toàn bộ batch
+            if ($notification->batch_id) {
+                $count = ThongBao::where('batch_id', $notification->batch_id)->count();
+                ThongBao::where('batch_id', $notification->batch_id)->delete();
+                $message = "Đã xóa thông báo (gồm {$count} người nhận) thành công!";
+            } else {
+                // Xóa các thông báo có nội dung giống nhau (cùng thời gian)
+                $groupKey = md5($notification->tieu_de . $notification->noi_dung . $notification->created_at->format('Y-m-d H:i'));
+                $similarNotifications = ThongBao::where('tieu_de', $notification->tieu_de)
+                    ->where('noi_dung', $notification->noi_dung)
+                    ->whereBetween('created_at', [
+                        $notification->created_at->copy()->subMinute(),
+                        $notification->created_at->copy()->addMinute()
+                    ])
+                    ->get();
+                
+                if ($similarNotifications->count() > 1) {
+                    $count = $similarNotifications->count();
+                    ThongBao::whereIn('id', $similarNotifications->pluck('id'))->delete();
+                    $message = "Đã xóa thông báo (gồm {$count} người nhận) thành công!";
+                } else {
+                    $notification->delete();
+                    $message = 'Đã xóa thông báo thành công!';
+                }
+            }
 
             return redirect()
                 ->route('admin.notifications.index')
-                ->with('success', 'Đã xóa thông báo thành công!');
+                ->with('success', $message);
         } catch (\Exception $e) {
             return redirect()
                 ->route('admin.notifications.index')
@@ -169,11 +259,47 @@ class NotificationManagementController extends Controller
         ]);
 
         try {
-            ThongBao::whereIn('id', $validated['notification_ids'])->delete();
+            $deletedCount = 0;
+            $batchesProcessed = [];
+            
+            foreach ($validated['notification_ids'] as $id) {
+                $notification = ThongBao::find($id);
+                
+                if (!$notification) continue;
+                
+                // Nếu có batch_id và chưa xử lý batch này
+                if ($notification->batch_id && !in_array($notification->batch_id, $batchesProcessed)) {
+                    $count = ThongBao::where('batch_id', $notification->batch_id)->count();
+                    ThongBao::where('batch_id', $notification->batch_id)->delete();
+                    $deletedCount += $count;
+                    $batchesProcessed[] = $notification->batch_id;
+                } 
+                // Nếu không có batch_id, xóa các thông báo giống nhau
+                else if (!$notification->batch_id) {
+                    $groupKey = md5($notification->tieu_de . $notification->noi_dung . $notification->created_at->format('Y-m-d H:i'));
+                    
+                    // Kiểm tra xem đã xử lý nhóm này chưa
+                    if (!in_array($groupKey, $batchesProcessed)) {
+                        $similarNotifications = ThongBao::where('tieu_de', $notification->tieu_de)
+                            ->where('noi_dung', $notification->noi_dung)
+                            ->whereBetween('created_at', [
+                                $notification->created_at->copy()->subMinute(),
+                                $notification->created_at->copy()->addMinute()
+                            ])
+                            ->get();
+                        
+                        if ($similarNotifications->count() > 0) {
+                            ThongBao::whereIn('id', $similarNotifications->pluck('id'))->delete();
+                            $deletedCount += $similarNotifications->count();
+                            $batchesProcessed[] = $groupKey;
+                        }
+                    }
+                }
+            }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Đã xóa ' . count($validated['notification_ids']) . ' thông báo'
+                'message' => 'Đã xóa ' . $deletedCount . ' thông báo'
             ]);
         } catch (\Exception $e) {
             return response()->json([

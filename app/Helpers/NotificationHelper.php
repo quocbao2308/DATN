@@ -11,6 +11,55 @@ use Illuminate\Support\Facades\Log;
 class NotificationHelper
 {
     /**
+     * Gửi thông báo với batch ID (dùng cho gửi nhiều)
+     * 
+     * @param int $nguoiNhanId ID người nhận
+     * @param string $tieuDe Tiêu đề thông báo
+     * @param string $noiDung Nội dung thông báo
+     * @param string $loai Loại: thong_tin, canh_bao, quan_trong
+     * @param string|null $lienKet Link chuyển hướng (optional)
+     * @param string|null $batchId Batch ID để nhóm thông báo
+     * @param int|null $nguoiTaoId ID người tạo (mặc định: user hiện tại)
+     * @return ThongBao|null
+     */
+    private static function sendWithBatch(
+        int $nguoiNhanId,
+        string $tieuDe,
+        string $noiDung,
+        string $loai = 'thong_tin',
+        ?string $lienKet = null,
+        ?string $batchId = null,
+        ?int $nguoiTaoId = null
+    ): ?ThongBao {
+        try {
+            // Kiểm tra người nhận có tồn tại không
+            if (!User::find($nguoiNhanId)) {
+                Log::warning("NotificationHelper: Người nhận không tồn tại (ID: {$nguoiNhanId})");
+                return null;
+            }
+
+            // Tạo thông báo
+            $notification = ThongBao::create([
+                'nguoi_nhan_id' => $nguoiNhanId,
+                'nguoi_tao_id' => $nguoiTaoId ?? Auth::id() ?? 1,
+                'tieu_de' => $tieuDe,
+                'noi_dung' => $noiDung,
+                'loai' => $loai,
+                'vai_tro_nhan' => 'specific',
+                'lien_ket' => $lienKet,
+                'da_doc' => false,
+                'batch_id' => $batchId,
+            ]);
+
+            Log::info("NotificationHelper: Đã gửi thông báo #{$notification->id} cho user #{$nguoiNhanId}" . ($batchId ? " (Batch: {$batchId})" : ""));
+            return $notification;
+        } catch (\Exception $e) {
+            Log::error("NotificationHelper: Lỗi khi gửi thông báo - " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Gửi thông báo cho một người dùng
      * 
      * @param int $nguoiNhanId ID người nhận
@@ -29,31 +78,7 @@ class NotificationHelper
         ?string $lienKet = null,
         ?int $nguoiTaoId = null
     ): ?ThongBao {
-        try {
-            // Kiểm tra người nhận có tồn tại không
-            if (!User::find($nguoiNhanId)) {
-                Log::warning("NotificationHelper: Người nhận không tồn tại (ID: {$nguoiNhanId})");
-                return null;
-            }
-
-            // Tạo thông báo
-            $notification = ThongBao::create([
-                'nguoi_nhan_id' => $nguoiNhanId,
-                'nguoi_tao_id' => $nguoiTaoId ?? Auth::id() ?? 1, // Mặc định admin nếu không có user
-                'tieu_de' => $tieuDe,
-                'noi_dung' => $noiDung,
-                'loai' => $loai,
-                'vai_tro_nhan' => 'specific', // Gửi cho người cụ thể
-                'lien_ket' => $lienKet,
-                'da_doc' => false,
-            ]);
-
-            Log::info("NotificationHelper: Đã gửi thông báo #{$notification->id} cho user #{$nguoiNhanId}");
-            return $notification;
-        } catch (\Exception $e) {
-            Log::error("NotificationHelper: Lỗi khi gửi thông báo - " . $e->getMessage());
-            return null;
-        }
+        return self::sendWithBatch($nguoiNhanId, $tieuDe, $noiDung, $loai, $lienKet, null, $nguoiTaoId);
     }
 
     /**
@@ -73,9 +98,12 @@ class NotificationHelper
         string $loai = 'thong_tin',
         ?string $lienKet = null
     ): int {
+        // Tạo batch ID để nhóm các thông báo
+        $batchId = 'batch_' . time() . '_' . uniqid();
+
         $count = 0;
         foreach ($nguoiNhanIds as $id) {
-            if (self::send($id, $tieuDe, $noiDung, $loai, $lienKet)) {
+            if (self::sendWithBatch($id, $tieuDe, $noiDung, $loai, $lienKet, $batchId)) {
                 $count++;
             }
         }

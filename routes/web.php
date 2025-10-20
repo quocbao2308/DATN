@@ -75,9 +75,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('roles', RoleController::class);
 
     // Quản lý Thông báo
-    Route::resource('notifications', NotificationManagementController::class);
     Route::delete('notifications/destroy-multiple', [NotificationManagementController::class, 'destroyMultiple'])->name('notifications.destroyMultiple');
     Route::get('notifications/stats', [NotificationManagementController::class, 'getStats'])->name('notifications.stats');
+    Route::resource('notifications', NotificationManagementController::class);
 
     // Test Notifications (Development only)
     Route::get('test-notifications', [\App\Http\Controllers\Admin\TestNotificationController::class, 'index'])->name('test-notifications.index');
