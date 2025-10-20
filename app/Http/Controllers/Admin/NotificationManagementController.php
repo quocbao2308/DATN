@@ -36,22 +36,29 @@ class NotificationManagementController extends Controller
             })
             ->orderBy('created_at', 'desc');
 
-        // Nhóm thông báo theo batch_id
+        // Nhóm thông báo theo batch_id HOẶC theo nội dung giống nhau
         $allNotifications = $query->get()->groupBy(function ($notification) {
-            return $notification->batch_id ?? 'single_' . $notification->id;
+            // Nếu có batch_id thì nhóm theo batch_id
+            if ($notification->batch_id) {
+                return 'batch_' . $notification->batch_id;
+            }
+            // Nếu không có batch_id, nhóm theo nội dung giống nhau (tieu_de + noi_dung + created_at trong cùng phút)
+            $groupKey = md5($notification->tieu_de . $notification->noi_dung . $notification->created_at->format('Y-m-d H:i'));
+            return 'content_' . $groupKey;
         })->map(function ($group) {
             $first = $group->first();
             $count = $group->count();
-            
-            // Nếu là batch (nhiều người), tính số người đã đọc
-            if ($count > 1 && $first->batch_id) {
+
+            // Nếu nhóm có nhiều hơn 1 thông báo, đánh dấu là batch
+            if ($count > 1) {
                 $first->recipient_count = $count;
                 $first->read_count = $group->where('da_doc', true)->count();
                 $first->is_batch = true;
+                $first->recipients = $group->pluck('nguoiNhan')->filter(); // Danh sách người nhận
             } else {
                 $first->is_batch = false;
             }
-            
+
             return $first;
         })->values();
 
@@ -164,10 +171,37 @@ class NotificationManagementController extends Controller
     /**
      * Display the specified notification.
      */
-    public function show(ThongBao $notification)
+    public function show($id)
     {
-        $notification->load(['nguoiNhan', 'nguoiTao']);
-        return view('admin.notifications.show', compact('notification'));
+        $notification = ThongBao::with(['nguoiNhan', 'nguoiTao'])->findOrFail($id);
+        
+        // Lấy tất cả thông báo trong cùng batch (nếu là batch)
+        $recipients = collect();
+        if ($notification->batch_id) {
+            // Nhóm theo batch_id
+            $recipients = ThongBao::with('nguoiNhan')
+                ->where('batch_id', $notification->batch_id)
+                ->orderBy('da_doc', 'asc')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            // Nhóm theo nội dung giống nhau (cùng thời gian gửi)
+            $groupKey = md5($notification->tieu_de . $notification->noi_dung . $notification->created_at->format('Y-m-d H:i'));
+            $recipients = ThongBao::with('nguoiNhan')
+                ->where('tieu_de', $notification->tieu_de)
+                ->where('noi_dung', $notification->noi_dung)
+                ->whereBetween('created_at', [
+                    $notification->created_at->copy()->subMinute(),
+                    $notification->created_at->copy()->addMinute()
+                ])
+                ->orderBy('da_doc', 'asc')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+        
+        $isBatch = $recipients->count() > 1;
+        
+        return view('admin.notifications.show', compact('notification', 'recipients', 'isBatch'));
     }
 
     /**

@@ -162,13 +162,15 @@
                                         <td>
                                             <div>
                                                 <strong>{{ Str::limit($notification->tieu_de, 50) }}</strong>
-                                                @if($notification->is_batch ?? false)
+                                                @if ($notification->is_batch ?? false)
                                                     <span class="badge bg-primary ms-2">
-                                                        <i class="bi bi-people-fill"></i> {{ $notification->recipient_count }} người
+                                                        <i class="bi bi-people-fill"></i>
+                                                        {{ $notification->recipient_count }} người
                                                     </span>
                                                 @endif
                                                 <br>
-                                                <small class="text-muted">{{ Str::limit($notification->noi_dung, 80) }}</small>
+                                                <small
+                                                    class="text-muted">{{ Str::limit($notification->noi_dung, 80) }}</small>
                                             </div>
                                         </td>
                                         <td>
@@ -199,9 +201,10 @@
                                             {{ $notification->nguoiTao->name ?? 'N/A' }}
                                         </td>
                                         <td>
-                                            @if($notification->is_batch ?? false)
+                                            @if ($notification->is_batch ?? false)
                                                 <span class="badge bg-info">
-                                                    {{ $notification->read_count }}/{{ $notification->recipient_count }} đã đọc
+                                                    {{ $notification->read_count }}/{{ $notification->recipient_count }}
+                                                    đã đọc
                                                 </span>
                                             @else
                                                 @if ($notification->da_doc)

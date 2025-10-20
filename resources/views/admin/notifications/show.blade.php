@@ -68,6 +68,74 @@
                 </div>
 
                 <!-- Recipients Card -->
+                @if($isBatch)
+                <div class="card border-0 shadow-sm mt-3">
+                    <div class="card-header bg-white py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-people-fill"></i> Danh sách Người nhận ({{ $recipients->count() }})
+                            </h5>
+                            <div>
+                                <span class="badge bg-success">{{ $recipients->where('da_doc', true)->count() }} đã đọc</span>
+                                <span class="badge bg-warning">{{ $recipients->where('da_doc', false)->count() }} chưa đọc</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="50">#</th>
+                                        <th>Người nhận</th>
+                                        <th>Email</th>
+                                        <th width="120">Trạng thái</th>
+                                        <th width="150">Thời gian đọc</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($recipients as $index => $recipient)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>
+                                            <i class="bi bi-person-circle"></i>
+                                            {{ $recipient->nguoiNhan->name ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">{{ $recipient->nguoiNhan->email ?? 'N/A' }}</small>
+                                        </td>
+                                        <td>
+                                            @if($recipient->da_doc)
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-circle"></i> Đã đọc
+                                                </span>
+                                            @else
+                                                <span class="badge bg-warning">
+                                                    <i class="bi bi-envelope"></i> Chưa đọc
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($recipient->da_doc)
+                                                <small class="text-muted">{{ $recipient->updated_at->diffForHumans() }}</small>
+                                            @else
+                                                <small class="text-muted">-</small>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i>
+                            Thông báo này được gửi cho {{ $recipients->count() }} người vào lúc {{ $notification->created_at->format('d/m/Y H:i:s') }}
+                        </small>
+                    </div>
+                </div>
+                @else
                 <div class="card border-0 shadow-sm mt-3">
                     <div class="card-header bg-white py-3">
                         <h5 class="mb-0">Thông tin người nhận</h5>
@@ -117,6 +185,7 @@
                         @endif
                     </div>
                 </div>
+                @endif
             </div>
 
             <div class="col-lg-4">

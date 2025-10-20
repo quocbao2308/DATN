@@ -100,7 +100,7 @@ class NotificationHelper
     ): int {
         // Tạo batch ID để nhóm các thông báo
         $batchId = 'batch_' . time() . '_' . uniqid();
-        
+
         $count = 0;
         foreach ($nguoiNhanIds as $id) {
             if (self::sendWithBatch($id, $tieuDe, $noiDung, $loai, $lienKet, $batchId)) {
