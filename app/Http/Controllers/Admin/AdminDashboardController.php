@@ -35,18 +35,18 @@ class AdminDashboardController extends Controller
             'sinh_vien' => DB::table('sinh_vien')->count(),
         ];
 
-        // Thống kê sinh viên theo trạng thái
-        $sinhVienByStatus = DB::table('sinh_vien')
+        // Thống kê sinh viên hoạt động (đang học, nghỉ học, bảo lưu, thôi học)
+        $sinhVienHoatDong = DB::table('sinh_vien')
             ->join('trang_thai_hoc_tap', 'sinh_vien.trang_thai_hoc_tap_id', '=', 'trang_thai_hoc_tap.id')
-            ->select('trang_thai_hoc_tap.ten_trang_thai', DB::raw('count(*) as total'))
-            ->groupBy('trang_thai_hoc_tap.ten_trang_thai', 'trang_thai_hoc_tap.id')
+            ->select('trang_thai_hoc_tap.id', 'trang_thai_hoc_tap.ten_trang_thai', DB::raw('count(*) as total'))
+            ->groupBy('trang_thai_hoc_tap.id', 'trang_thai_hoc_tap.ten_trang_thai')
             ->get();
 
         // Thống kê sinh viên theo ngành (Top 5)
         $sinhVienByNganh = DB::table('sinh_vien')
             ->join('nganh', 'sinh_vien.nganh_id', '=', 'nganh.id')
-            ->select('nganh.ten_nganh', DB::raw('count(*) as total'))
-            ->groupBy('nganh.ten_nganh', 'nganh.id')
+            ->select('nganh.id', 'nganh.ten_nganh', DB::raw('count(*) as total'))
+            ->groupBy('nganh.id', 'nganh.ten_nganh')
             ->orderByDesc('total')
             ->limit(5)
             ->get();
@@ -54,15 +54,15 @@ class AdminDashboardController extends Controller
         // Thống kê giảng viên theo khoa
         $giangVienByKhoa = DB::table('giang_vien')
             ->join('khoa', 'giang_vien.khoa_id', '=', 'khoa.id')
-            ->select('khoa.ten_khoa', DB::raw('count(*) as total'))
-            ->groupBy('khoa.ten_khoa', 'khoa.id')
+            ->select('khoa.id', 'khoa.ten_khoa', DB::raw('count(*) as total'))
+            ->groupBy('khoa.id', 'khoa.ten_khoa')
             ->get();
 
         // Thống kê giảng viên theo trình độ
         $giangVienByTrinhDo = DB::table('giang_vien')
             ->join('dm_trinh_do', 'giang_vien.trinh_do_id', '=', 'dm_trinh_do.id')
-            ->select('dm_trinh_do.ten_trinh_do', DB::raw('count(*) as total'))
-            ->groupBy('dm_trinh_do.ten_trinh_do', 'dm_trinh_do.id')
+            ->select('dm_trinh_do.id', 'dm_trinh_do.ten_trinh_do', DB::raw('count(*) as total'))
+            ->groupBy('dm_trinh_do.id', 'dm_trinh_do.ten_trinh_do')
             ->get();
 
         // Users mới trong 7 ngày
@@ -98,10 +98,10 @@ class AdminDashboardController extends Controller
         return view('admin.dashboard', compact(
             'stats',
             'usersByRole',
-            'sinhVienByStatus',
+            'sinhVienHoatDong',
+            'giangVienByTrinhDo',
             'sinhVienByNganh',
             'giangVienByKhoa',
-            'giangVienByTrinhDo',
             'newUsersLast7Days',
             'newUsersLast30Days',
             'newSinhVienLast30Days',

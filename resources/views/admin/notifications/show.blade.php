@@ -68,123 +68,128 @@
                 </div>
 
                 <!-- Recipients Card -->
-                @if($isBatch)
-                <div class="card border-0 shadow-sm mt-3">
-                    <div class="card-header bg-white py-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">
-                                <i class="bi bi-people-fill"></i> Danh sách Người nhận ({{ $recipients->count() }})
-                            </h5>
-                            <div>
-                                <span class="badge bg-success">{{ $recipients->where('da_doc', true)->count() }} đã đọc</span>
-                                <span class="badge bg-warning">{{ $recipients->where('da_doc', false)->count() }} chưa đọc</span>
+                @if ($isBatch)
+                    <div class="card border-0 shadow-sm mt-3">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-people-fill"></i> Danh sách Người nhận ({{ $recipients->count() }})
+                                </h5>
+                                <div>
+                                    <span class="badge bg-success">{{ $recipients->where('da_doc', true)->count() }} đã
+                                        đọc</span>
+                                    <span class="badge bg-warning">{{ $recipients->where('da_doc', false)->count() }} chưa
+                                        đọc</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th width="50">#</th>
-                                        <th>Người nhận</th>
-                                        <th>Email</th>
-                                        <th width="120">Trạng thái</th>
-                                        <th width="150">Thời gian đọc</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($recipients as $index => $recipient)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>
-                                            <i class="bi bi-person-circle"></i>
-                                            {{ $recipient->nguoiNhan->name ?? 'N/A' }}
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">{{ $recipient->nguoiNhan->email ?? 'N/A' }}</small>
-                                        </td>
-                                        <td>
-                                            @if($recipient->da_doc)
-                                                <span class="badge bg-success">
-                                                    <i class="bi bi-check-circle"></i> Đã đọc
-                                                </span>
-                                            @else
-                                                <span class="badge bg-warning">
-                                                    <i class="bi bi-envelope"></i> Chưa đọc
-                                                </span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($recipient->da_doc)
-                                                <small class="text-muted">{{ $recipient->updated_at->diffForHumans() }}</small>
-                                            @else
-                                                <small class="text-muted">-</small>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th width="50">#</th>
+                                            <th>Người nhận</th>
+                                            <th>Email</th>
+                                            <th width="120">Trạng thái</th>
+                                            <th width="150">Thời gian đọc</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($recipients as $index => $recipient)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>
+                                                    <i class="bi bi-person-circle"></i>
+                                                    {{ $recipient->nguoiNhan->name ?? 'N/A' }}
+                                                </td>
+                                                <td>
+                                                    <small
+                                                        class="text-muted">{{ $recipient->nguoiNhan->email ?? 'N/A' }}</small>
+                                                </td>
+                                                <td>
+                                                    @if ($recipient->da_doc)
+                                                        <span class="badge bg-success">
+                                                            <i class="bi bi-check-circle"></i> Đã đọc
+                                                        </span>
+                                                    @else
+                                                        <span class="badge bg-warning">
+                                                            <i class="bi bi-envelope"></i> Chưa đọc
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($recipient->da_doc)
+                                                        <small
+                                                            class="text-muted">{{ $recipient->updated_at->diffForHumans() }}</small>
+                                                    @else
+                                                        <small class="text-muted">-</small>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle"></i>
+                                Thông báo này được gửi cho {{ $recipients->count() }} người vào lúc
+                                {{ $notification->created_at->format('d/m/Y H:i:s') }}
+                            </small>
                         </div>
                     </div>
-                    <div class="card-footer bg-white">
-                        <small class="text-muted">
-                            <i class="bi bi-info-circle"></i>
-                            Thông báo này được gửi cho {{ $recipients->count() }} người vào lúc {{ $notification->created_at->format('d/m/Y H:i:s') }}
-                        </small>
-                    </div>
-                </div>
                 @else
-                <div class="card border-0 shadow-sm mt-3">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="mb-0">Thông tin người nhận</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="mb-2">
-                                    <strong>Đối tượng:</strong>
-                                    @if ($notification->vai_tro_nhan == 'all')
-                                        <span class="badge bg-primary">Tất cả</span>
-                                    @elseif($notification->vai_tro_nhan == 'admin')
-                                        <span class="badge bg-dark">Admin</span>
-                                    @elseif($notification->vai_tro_nhan == 'dao_tao')
-                                        <span class="badge bg-success">Đào tạo</span>
-                                    @elseif($notification->vai_tro_nhan == 'giang_vien')
-                                        <span class="badge bg-info">Giảng viên</span>
-                                    @elseif($notification->vai_tro_nhan == 'sinh_vien')
-                                        <span class="badge bg-warning">Sinh viên</span>
-                                    @else
-                                        <span class="badge bg-secondary">Cá nhân</span>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="mb-2">
-                                    <strong>Người nhận:</strong> {{ $notification->nguoiNhan->name ?? 'N/A' }}
-                                </p>
-                            </div>
+                    <div class="card border-0 shadow-sm mt-3">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0">Thông tin người nhận</h5>
                         </div>
-
-                        @if ($notification->nguoiNhan)
-                            <hr>
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="mb-1 text-muted small">
-                                        <i class="bi bi-envelope"></i> {{ $notification->nguoiNhan->email }}
+                                    <p class="mb-2">
+                                        <strong>Đối tượng:</strong>
+                                        @if ($notification->vai_tro_nhan == 'all')
+                                            <span class="badge bg-primary">Tất cả</span>
+                                        @elseif($notification->vai_tro_nhan == 'admin')
+                                            <span class="badge bg-dark">Admin</span>
+                                        @elseif($notification->vai_tro_nhan == 'dao_tao')
+                                            <span class="badge bg-success">Đào tạo</span>
+                                        @elseif($notification->vai_tro_nhan == 'giang_vien')
+                                            <span class="badge bg-info">Giảng viên</span>
+                                        @elseif($notification->vai_tro_nhan == 'sinh_vien')
+                                            <span class="badge bg-warning">Sinh viên</span>
+                                        @else
+                                            <span class="badge bg-secondary">Cá nhân</span>
+                                        @endif
                                     </p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p class="mb-1 text-muted small">
-                                        <i class="bi bi-calendar"></i>
-                                        Đã nhận: {{ $notification->created_at->diffForHumans() }}
+                                    <p class="mb-2">
+                                        <strong>Người nhận:</strong> {{ $notification->nguoiNhan->name ?? 'N/A' }}
                                     </p>
                                 </div>
                             </div>
-                        @endif
+
+                            @if ($notification->nguoiNhan)
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-1 text-muted small">
+                                            <i class="bi bi-envelope"></i> {{ $notification->nguoiNhan->email }}
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-1 text-muted small">
+                                            <i class="bi bi-calendar"></i>
+                                            Đã nhận: {{ $notification->created_at->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
-                </div>
                 @endif
             </div>
 
