@@ -122,6 +122,15 @@ Route::prefix('dao-tao')->name('dao-tao.')->middleware(['auth'])->group(function
 
     // Quản lý lịch thi
     Route::resource('lich-thi', \App\Http\Controllers\LichHoc\LichThiController::class);
+
+    // Quản lý Học phí
+    Route::resource('hoc-phi', \App\Http\Controllers\HocPhi\HocPhiController::class);
+
+    // Quản lý Điểm danh
+    Route::get('diem-danh', [\App\Http\Controllers\LichHoc\DiemDanhController::class, 'index'])->name('diem-danh.index');
+    Route::get('diem-danh/thong-ke', [\App\Http\Controllers\LichHoc\DiemDanhController::class, 'thongKe'])->name('diem-danh.thong-ke');
+    Route::get('diem-danh/{lichHoc}/create', [\App\Http\Controllers\LichHoc\DiemDanhController::class, 'create'])->name('diem-danh.create');
+    Route::post('diem-danh/{lichHoc}', [\App\Http\Controllers\LichHoc\DiemDanhController::class, 'store'])->name('diem-danh.store');
 });
 
 // Giảng viên Routes

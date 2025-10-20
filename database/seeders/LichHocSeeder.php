@@ -2,203 +2,71 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class LichHocSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        $data = [
-            // --- Các bản ghi cũ ---
-            [
-                'lop_hoc_phan_id' => 1,
-                'ngay' => '2025-10-20',
-                'gio_bat_dau' => '07:30:00',
-                'gio_ket_thuc' => '09:30:00',
-                'phong_hoc_id' => 1,
-                'hinh_thuc_buoi_hoc' => 'offline',
-                'link_online' => null,
-                'giang_vien_phu_trach' => 1,
-                'ghi_chu' => 'Buổi học đầu tiên của lớp LHP001',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 2,
-                'ngay' => '2025-10-22',
-                'gio_bat_dau' => '09:45:00',
-                'gio_ket_thuc' => '11:45:00',
-                'phong_hoc_id' => 2,
-                'hinh_thuc_buoi_hoc' => 'offline',
-                'link_online' => null,
-                'giang_vien_phu_trach' => 1,
-                'ghi_chu' => 'Buổi học thứ 2 của lớp LHP001',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 3,
-                'ngay' => '2025-10-23',
-                'gio_bat_dau' => '13:30:00',
-                'gio_ket_thuc' => '15:30:00',
-                'phong_hoc_id' => 3,
-                'hinh_thuc_buoi_hoc' => 'online',
-                'link_online' => 'https://meet.smis.edu.vn/classroom10',
-                'giang_vien_phu_trach' => 2,
-                'ghi_chu' => 'Buổi học online qua Zoom',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 4,
-                'ngay' => '2025-10-24',
-                'gio_bat_dau' => '15:45:00',
-                'gio_ket_thuc' => '17:45:00',
-                'phong_hoc_id' => 4,
-                'hinh_thuc_buoi_hoc' => 'offline',
-                'link_online' => null,
-                'giang_vien_phu_trach' => 3,
-                'ghi_chu' => 'Buổi học đầu tiên của lớp LHP003',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 3,
-                'ngay' => '2025-10-27',
-                'gio_bat_dau' => '07:30:00',
-                'gio_ket_thuc' => '09:30:00',
-                'phong_hoc_id' => 4,
-                'hinh_thuc_buoi_hoc' => 'hybrid',
-                'link_online' => 'https://meet.smis.edu.vn/classroom10b',
-                'giang_vien_phu_trach' => 3,
-                'ghi_chu' => 'Buổi học kết hợp trực tiếp và online',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
+        // Lấy ID động từ các bảng liên quan
+        $lopHocPhans = DB::table('lop_hoc_phan')->pluck('id')->toArray();
+        $phongHocs = DB::table('phong_hoc')->pluck('id')->toArray();
+        $giangViens = DB::table('giang_vien')->pluck('id')->toArray();
 
-            // --- 10 bản ghi mới ---
-            [
-                'lop_hoc_phan_id' => 1,
-                'ngay' => '2025-10-28',
-                'gio_bat_dau' => '08:00:00',
-                'gio_ket_thuc' => '10:00:00',
-                'phong_hoc_id' => 5,
-                'hinh_thuc_buoi_hoc' => 'offline',
-                'link_online' => null,
-                'giang_vien_phu_trach' => 2,
-                'ghi_chu' => 'Lập trình Java - buổi 1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 1,
-                'ngay' => '2025-10-30',
-                'gio_bat_dau' => '08:00:00',
-                'gio_ket_thuc' => '10:00:00',
-                'phong_hoc_id' => 5,
-                'hinh_thuc_buoi_hoc' => 'offline',
-                'link_online' => null,
-                'giang_vien_phu_trach' => 2,
-                'ghi_chu' => 'Lập trình Java - buổi 2',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 4,
-                'ngay' => '2025-10-29',
-                'gio_bat_dau' => '13:00:00',
-                'gio_ket_thuc' => '15:00:00',
-                'phong_hoc_id' => 6,
-                'hinh_thuc_buoi_hoc' => 'online',
-                'link_online' => 'https://meet.smis.edu.vn/classroom13',
-                'giang_vien_phu_trach' => 3,
-                'ghi_chu' => 'Mạng máy tính - buổi online 1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 3,
-                'ngay' => '2025-11-01',
-                'gio_bat_dau' => '13:00:00',
-                'gio_ket_thuc' => '15:00:00',
-                'phong_hoc_id' => 6,
-                'hinh_thuc_buoi_hoc' => 'online',
-                'link_online' => 'https://meet.smis.edu.vn/classroom13b',
-                'giang_vien_phu_trach' => 3,
-                'ghi_chu' => 'Mạng máy tính - buổi online 2',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 3,
-                'ngay' => '2025-10-31',
-                'gio_bat_dau' => '07:30:00',
-                'gio_ket_thuc' => '09:30:00',
-                'phong_hoc_id' => 7,
-                'hinh_thuc_buoi_hoc' => 'offline',
-                'link_online' => null,
-                'giang_vien_phu_trach' => 1,
-                'ghi_chu' => 'Cơ sở dữ liệu - buổi 1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 4,
-                'ngay' => '2025-11-03',
-                'gio_bat_dau' => '07:30:00',
-                'gio_ket_thuc' => '09:30:00',
-                'phong_hoc_id' => 7,
-                'hinh_thuc_buoi_hoc' => 'offline',
-                'link_online' => null,
-                'giang_vien_phu_trach' => 1,
-                'ghi_chu' => 'Cơ sở dữ liệu - buổi 2',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 3,
-                'ngay' => '2025-11-04',
-                'gio_bat_dau' => '09:45:00',
-                'gio_ket_thuc' => '11:45:00',
-                'phong_hoc_id' => 8,
-                'hinh_thuc_buoi_hoc' => 'hybrid',
-                'link_online' => 'https://meet.smis.edu.vn/classroom15',
-                'giang_vien_phu_trach' => 2,
-                'ghi_chu' => 'Phân tích hệ thống - học kết hợp',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 1,
-                'ngay' => '2025-11-05',
-                'gio_bat_dau' => '13:30:00',
-                'gio_ket_thuc' => '15:30:00',
-                'phong_hoc_id' => 9,
-                'hinh_thuc_buoi_hoc' => 'offline',
-                'link_online' => null,
-                'giang_vien_phu_trach' => 3,
-                'ghi_chu' => 'Nhập môn AI - buổi 1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'lop_hoc_phan_id' => 1,
-                'ngay' => '2025-11-07',
-                'gio_bat_dau' => '13:30:00',
-                'gio_ket_thuc' => '15:30:00',
-                'phong_hoc_id' => 9,
-                'hinh_thuc_buoi_hoc' => 'online',
-                'link_online' => 'https://meet.smis.edu.vn/classroom16',
-                'giang_vien_phu_trach' => 3,
-                'ghi_chu' => 'Nhập môn AI - buổi online',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ];
+        if (empty($lopHocPhans) || empty($phongHocs) || empty($giangViens)) {
+            echo "⚠️  Thiếu dữ liệu: Lớp học phần, Phòng học hoặc Giảng viên!\n";
+            return;
+        }
 
-        // Use insertOrIgnore to avoid crashing on duplicate unique constraint when seeding repeatedly
+        echo "🎯 Bắt đầu tạo dữ liệu lịch học...\n";
+
+        $data = [];
+        $startDate = Carbon::now();
+        $hinhThucs = ['offline', 'online', 'hybrid'];
+
+        // Tạo 30 bản ghi lịch học với thời gian và phòng khác nhau để tránh trùng unique
+        for ($i = 0; $i < 30; $i++) {
+            $ngay = $startDate->copy()->addDays($i % 10); // Chia đều trong 10 ngày
+            $gioBatDau = sprintf('%02d:%s:00', 7 + ($i % 8), ($i % 2) ? '00' : '30');
+            $hour = intval(substr($gioBatDau, 0, 2));
+            $gioKetThuc = sprintf('%02d:%s:00', $hour + 2, substr($gioBatDau, 3, 2));
+            $hinhThuc = $hinhThucs[array_rand($hinhThucs)];
+
+            $data[] = [
+                'lop_hoc_phan_id' => $lopHocPhans[array_rand($lopHocPhans)],
+                'ngay' => $ngay->format('Y-m-d'),
+                'gio_bat_dau' => $gioBatDau,
+                'gio_ket_thuc' => $gioKetThuc,
+                'phong_hoc_id' => $phongHocs[$i % count($phongHocs)], // Luân phiên phòng
+                'hinh_thuc_buoi_hoc' => $hinhThuc,
+                'link_online' => ($hinhThuc != 'offline') ? 'https://meet.google.com/abc-' . $i : null,
+                'giang_vien_phu_trach' => $giangViens[array_rand($giangViens)],
+                'ghi_chu' => 'Buổi học số ' . ($i + 1),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        // Insert với insertOrIgnore để bỏ qua lỗi unique
         DB::table('lich_hoc')->insertOrIgnore($data);
+
+        $inserted = DB::table('lich_hoc')->count();
+        echo "✅ Đã tạo {$inserted} bản ghi lịch học!\n";
+
+        // Thống kê
+        $offline = DB::table('lich_hoc')->where('hinh_thuc_buoi_hoc', 'offline')->count();
+        $online = DB::table('lich_hoc')->where('hinh_thuc_buoi_hoc', 'online')->count();
+        $hybrid = DB::table('lich_hoc')->where('hinh_thuc_buoi_hoc', 'hybrid')->count();
+
+        echo "📊 Thống kê:\n";
+        echo "   - Offline: {$offline}\n";
+        echo "   - Online: {$online}\n";
+        echo "   - Hybrid: {$hybrid}\n";
     }
 }

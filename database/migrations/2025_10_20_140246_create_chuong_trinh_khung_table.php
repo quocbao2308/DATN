@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // If the table already exists (created by older migration), skip creating it to avoid errors
+        if (Schema::hasTable('chuong_trinh_khung')) {
+            return;
+        }
+
         Schema::create('chuong_trinh_khung', function (Blueprint $table) {
             $table->id();
             $table->foreignId('chuyen_nganh_id')->constrained('chuyen_nganh')->cascadeOnDelete();

@@ -9,6 +9,7 @@ use App\Models\LichHoc\LichThi;
 use App\Models\NhanSu\GiangVien;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class LichThiController extends Controller
 {
@@ -47,14 +48,37 @@ class LichThiController extends Controller
     {
         $data = $request->validate([
             'lop_hoc_phan_id' => 'required|exists:lop_hoc_phan,id',
-            'ngay_thi' => 'required|date',
+            'ngay_thi' => 'required|date|after_or_equal:today',
             'gio_bat_dau' => ['required', 'date_format:H:i'],
             'gio_ket_thuc' => ['required', 'date_format:H:i', 'after:gio_bat_dau'],
             'phong_hoc_id' => 'required|exists:phong_hoc,id',
             'hinh_thuc' => 'required|in:offline,online,hybrid',
-            'link_online' => 'nullable|string|max:255',
+            'link_online' => 'nullable|string|max:255|required_if:hinh_thuc,online,hybrid',
             'file_pdf' => 'nullable|file|mimes:pdf|max:10240', // tối đa 10MB
         ]);
+
+        // Kiểm tra lớp học phần đã có lịch thi chưa
+        $daTonTai = LichThi::where('lop_hoc_phan_id', $data['lop_hoc_phan_id'])->exists();
+        if ($daTonTai) {
+            return back()->withErrors(['lop_hoc_phan_id' => 'Lớp học phần này đã có lịch thi!'])->withInput();
+        }
+
+        // Kiểm tra trùng phòng thi
+        $trungPhong = LichThi::where('phong_hoc_id', $data['phong_hoc_id'])
+            ->where('ngay_thi', $data['ngay_thi'])
+            ->where(function ($query) use ($data) {
+                $query->whereBetween('gio_bat_dau', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhereBetween('gio_ket_thuc', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhere(function ($q) use ($data) {
+                        $q->where('gio_bat_dau', '<=', $data['gio_bat_dau'])
+                            ->where('gio_ket_thuc', '>=', $data['gio_ket_thuc']);
+                    });
+            })
+            ->exists();
+
+        if ($trungPhong) {
+            return back()->withErrors(['phong_hoc_id' => 'Phòng thi đã được sử dụng trong khung giờ này!'])->withInput();
+        }
 
         $lichThi = new LichThi();
         $lichThi->lop_hoc_phan_id = $data['lop_hoc_phan_id'];
@@ -124,8 +148,40 @@ class LichThiController extends Controller
             'gio_ket_thuc' => ['required', 'date_format:H:i', 'after:gio_bat_dau'],
             'phong_hoc_id' => 'required|exists:phong_hoc,id',
             'hinh_thuc' => 'required|in:offline,online,hybrid',
-            'link_online' => 'nullable|string|max:255',
+            'link_online' => 'nullable|string|max:255|required_if:hinh_thuc,online,hybrid',
+            'file_pdf' => 'nullable|file|mimes:pdf|max:10240',
         ]);
+
+        // Kiểm tra trùng phòng thi (ngoại trừ bản ghi hiện tại)
+        $trungPhong = LichThi::where('phong_hoc_id', $data['phong_hoc_id'])
+            ->where('ngay_thi', $data['ngay_thi'])
+            ->where('id', '!=', $id)
+            ->where(function ($query) use ($data) {
+                $query->whereBetween('gio_bat_dau', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhereBetween('gio_ket_thuc', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhere(function ($q) use ($data) {
+                        $q->where('gio_bat_dau', '<=', $data['gio_bat_dau'])
+                            ->where('gio_ket_thuc', '>=', $data['gio_ket_thuc']);
+                    });
+            })
+            ->exists();
+
+        if ($trungPhong) {
+            return back()->withErrors(['phong_hoc_id' => 'Phòng thi đã được sử dụng trong khung giờ này!'])->withInput();
+        }
+
+        // Xử lý upload file PDF mới nếu có
+        if ($request->hasFile('file_pdf')) {
+            // Xóa file cũ nếu có
+            if ($lichThi->file_pdf && Storage::disk('public')->exists($lichThi->file_pdf)) {
+                Storage::disk('public')->delete($lichThi->file_pdf);
+            }
+
+            $file = $request->file('file_pdf');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('lich-thi', $fileName, 'public');
+            $data['file_pdf'] = $path;
+        }
 
         $lichThi->update($data);
 
