@@ -3,8 +3,9 @@
         <div class="sidebar-header">
             <div class="d-flex justify-content-between">
                 <div class="logo">
-                    <a href="{{ route('dao-tao.dashboard') }}"><img src="{{ asset('assets/images/logo/logo.png') }}"
-                            alt="Logo" srcset=""></a>
+                    <a href="{{ route('dao-tao.dashboard') }}" class="d-flex align-items-center">
+                        <h4 class="mb-0 text-primary fw-bold">S-MIS</h4>
+                    </a>
                 </div>
                 <div class="toggler">
                     <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
@@ -39,7 +40,23 @@
                         <span>Giảng viên</span>
                     </a>
                 </li>
-                         {{-- Lớp học phần --}}
+                {{-- Môn học --}}
+                <li class="sidebar-item {{ request()->is('dao-tao/mon-hoc*') ? 'active' : '' }}">
+                    <a href="{{ route('dao-tao.mon-hoc.index') }}" class='sidebar-link'>
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                        <span>Môn học</span>
+                    </a>
+                </li>
+
+                {{-- Chương trình khung --}}
+                <li class="sidebar-item {{ request()->is('dao-tao/chuong-trinh-khung*') ? 'active' : '' }}">
+                    <a href="{{ route('dao-tao.chuong-trinh-khung.index') }}" class='sidebar-link'>
+                        <i class="bi bi-journal-text"></i>
+                        <span>Chương trình khung</span>
+                    </a>
+                </li>
+
+                {{-- Lớp học phần --}}
                 <li class="sidebar-item {{ request()->is('dao-tao/lop-hoc-phan*') ? 'active' : '' }}">
                     <a href="{{ route('dao-tao.lop-hoc-phan.index') }}" class='sidebar-link'>
                         <i class="bi bi-book-half"></i>
@@ -47,19 +64,25 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-journal-text"></i>
-                        <span>Quản lý Chương trình</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item">
+                <li
+                    class="sidebar-item has-sub {{ request()->is('dao-tao/lich-hoc*') || request()->is('dao-tao/lich-thi*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-calendar-check"></i>
-                        <span>Lịch học</span>
+                        <span>Quản lý Lịch</span>
                     </a>
+
+                    <ul
+                        class="submenu {{ request()->is('dao-tao/lich-hoc*') || request()->is('dao-tao/lich-thi*') ? 'active' : '' }}">
+
+                        <li class="submenu-item {{ request()->is('dao-tao/lich-hoc*') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.lich-hoc.index') }}">Lịch học</a>
+                        </li>
+                        <li class="submenu-item {{ request()->is('dao-tao/lich-thi*') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.lich-thi.index') }}">Lịch thi</a>
+                        </li>
+                    </ul>
                 </li>
+
 
                 <li class="sidebar-item">
                     <a href="#" class='sidebar-link'>
