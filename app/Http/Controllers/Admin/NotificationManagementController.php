@@ -20,7 +20,8 @@ class NotificationManagementController extends Controller
         $type = $request->get('type');
         $role = $request->get('role');
 
-        $notifications = ThongBao::with(['nguoiNhan', 'nguoiTao'])
+        // Lấy tất cả thông báo theo điều kiện lọc
+        $query = ThongBao::with(['nguoiNhan', 'nguoiTao'])
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('tieu_de', 'like', "%{$search}%")
@@ -33,8 +34,37 @@ class NotificationManagementController extends Controller
             ->when($role, function ($query, $role) {
                 $query->where('vai_tro_nhan', $role);
             })
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->orderBy('created_at', 'desc');
+
+        // Nhóm thông báo theo batch_id
+        $allNotifications = $query->get()->groupBy(function ($notification) {
+            return $notification->batch_id ?? 'single_' . $notification->id;
+        })->map(function ($group) {
+            $first = $group->first();
+            $count = $group->count();
+            
+            // Nếu là batch (nhiều người), tính số người đã đọc
+            if ($count > 1 && $first->batch_id) {
+                $first->recipient_count = $count;
+                $first->read_count = $group->where('da_doc', true)->count();
+                $first->is_batch = true;
+            } else {
+                $first->is_batch = false;
+            }
+            
+            return $first;
+        })->values();
+
+        // Phân trang thủ công
+        $currentPage = request()->get('page', 1);
+        $perPage = 15;
+        $notifications = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allNotifications->forPage($currentPage, $perPage),
+            $allNotifications->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
 
         // Thống kê
         $stats = [

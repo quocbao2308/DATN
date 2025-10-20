@@ -21,6 +21,7 @@ class ThongBao extends Model
         'lien_ket',
         'da_doc',
         'vai_tro_nhan', // all, admin, dao_tao, giang_vien, sinh_vien
+        'batch_id', // ID nhóm để nhóm các thông báo cùng lúc gửi
     ];
 
     protected $casts = [
