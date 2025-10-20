@@ -98,7 +98,7 @@
 
                     <!-- Pagination -->
                     <div class="mt-3">
-                        {{ $khoas->links() }}
+                        {{ $khoas->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>

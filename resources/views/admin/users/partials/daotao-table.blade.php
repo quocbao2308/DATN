@@ -51,5 +51,5 @@
 
 <!-- Pagination -->
 <div class="d-flex justify-content-center">
-    {{ $items->appends(['role' => 'dao_tao'])->links() }}
+    {{ $items->appends(['role' => 'dao_tao'])->links('pagination::bootstrap-5') }}
 </div>

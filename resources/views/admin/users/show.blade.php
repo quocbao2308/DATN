@@ -48,8 +48,22 @@
                     </div>
                 </div>
 
-                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary w-100 mb-2">Quay lại</a>
-                <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-warning w-100">Sửa</a>
+                {{-- Buttons --}}
+                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary w-100 mb-2">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+                <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-warning w-100 mb-2">
+                    <i class="fas fa-edit"></i> Sửa thông tin
+                </a>
+
+                {{-- Reset Password Button --}}
+                <form action="{{ route('admin.users.resetPassword', $user) }}" method="POST"
+                    onsubmit="return confirm('Bạn có chắc muốn reset mật khẩu cho người dùng này?\n\nMật khẩu mới sẽ được tạo ngẫu nhiên và hiển thị sau khi reset.');">
+                    @csrf
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-key"></i> Reset mật khẩu
+                    </button>
+                </form>
             </div>
 
             <div class="col-md-8">

@@ -77,7 +77,7 @@
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="mt-3">{{ $trangThais->links() }}</div>
+                    <div class="mt-3">{{ $trangThais->links('pagination::bootstrap-5') }}</div>
                 </div>
             </div>
         </section>

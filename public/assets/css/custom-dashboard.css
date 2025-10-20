@@ -1,0 +1,191 @@
+/* Custom Dashboard Styles */
+
+/* Stats Cards Animation */
+.stats-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover .stats-icon {
+    transform: scale(1.1);
+}
+
+/* Card Hover Effects */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats Cards Background Colors */
+.stats-icon.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stats-icon.purple {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stats-icon.blue {
+    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+}
+
+.stats-icon.green {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+}
+
+.stats-icon.red {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+}
+
+/* Quick Actions Buttons */
+.btn-block.py-3 {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.btn-block.py-3:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-block.py-3 i {
+    transition: transform 0.3s ease;
+}
+
+.btn-block.py-3:hover i {
+    transform: scale(1.2);
+}
+
+/* Chart Card Headers */
+.card-header h4 {
+    margin-bottom: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.card-header i {
+    margin-right: 8px;
+}
+
+/* Recent Activity Table */
+.table-hover tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.4em 0.8em;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+/* Responsive Chart Containers */
+@media (max-width: 768px) {
+    .stats-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+    
+    .font-extrabold {
+        font-size: 1.2rem !important;
+    }
+    
+    .btn-block.py-3 {
+        padding: 0.75rem !important;
+    }
+    
+    .btn-block.py-3 i {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* Loading Animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.loading {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Card Header with Icons */
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    padding: 1rem 1.25rem;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Number formatting in stats */
+.font-extrabold {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* Small info text */
+small.text-success i,
+small.text-muted i {
+    margin-right: 3px;
+}
+
+/* ApexCharts custom tooltip */
+.apexcharts-tooltip {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Page heading improvements */
+.page-heading {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.page-heading h3 {
+    margin-bottom: 0;
+    font-weight: 700;
+    color: #333;
+}
