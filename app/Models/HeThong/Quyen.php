@@ -4,15 +4,16 @@ namespace App\Models\HeThong;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\HeThong\VaiTro;
 
-class VaiTro extends Model
+class Quyen extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'vai_tro';
+    protected $table = 'quyen';
 
     /**
      * Indicates if the model should be timestamped.
@@ -27,19 +28,15 @@ class VaiTro extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'ten_vai_tro',
+        'ma_quyen',
+        'mo_ta',
     ];
 
     /**
-     * Get the permissions for this role.
+     * Get the roles that have this permission.
      */
-    public function quyens(): BelongsToMany
+    public function vaiTros(): BelongsToMany
     {
-        return $this->belongsToMany(
-            Quyen::class,
-            'vai_tro_quyen',
-            'vai_tro_id',
-            'quyen_id'
-        );
+        return $this->belongsToMany(VaiTro::class, 'vai_tro_quyen', 'quyen_id', 'vai_tro_id');
     }
 }

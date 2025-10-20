@@ -32,6 +32,20 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item {{ request()->is('admin/roles*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.roles.index') }}" class='sidebar-link'>
+                        <i class="bi bi-shield-check"></i>
+                        <span>Quản lý Vai trò</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{ request()->is('admin/permissions*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.permissions.index') }}" class='sidebar-link'>
+                        <i class="bi bi-key-fill"></i>
+                        <span>Quản lý Quyền</span>
+                    </a>
+                </li>
+
                 <li
                     class="sidebar-item has-sub {{ request()->is('admin/khoa*') || request()->is('admin/nganh*') || request()->is('admin/chuyen-nganh*') || request()->is('admin/trinh-do*') || request()->is('admin/trang-thai*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>

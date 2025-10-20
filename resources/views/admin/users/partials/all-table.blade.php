@@ -63,5 +63,5 @@
 
 <!-- Pagination -->
 <div class="d-flex justify-content-center">
-    {{ $items->appends(['role' => 'all'])->links() }}
+    {{ $items->appends(['role' => 'all'])->links('pagination::bootstrap-5') }}
 </div>

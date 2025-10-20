@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PasswordResetMail;
 
 class UserManagementController extends Controller
 {
@@ -438,6 +440,45 @@ class UserManagementController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Có lỗi: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Reset mật khẩu cho user
+     * 
+     * Admin có thể reset mật khẩu cho bất kỳ user nào
+     * Mật khẩu mới sẽ được tạo ngẫu nhiên và gửi qua email
+     */
+    public function resetPassword(User $user)
+    {
+        try {
+            // Tạo mật khẩu ngẫu nhiên (8 ký tự)
+            $newPassword = \Illuminate\Support\Str::random(8);
+
+            // Cập nhật mật khẩu
+            $user->update([
+                'password' => Hash::make($newPassword),
+            ]);
+
+            // Xóa cache quyền
+            \App\Helpers\PermissionHelper::clearUserPermissionsCache($user->id);
+
+            // Lấy tên hiển thị của user
+            $userName = $user->name;
+
+            // Gửi email thông báo mật khẩu mới cho user
+            try {
+                Mail::to($user->email)->send(new PasswordResetMail($userName, $user->email, $newPassword));
+
+                return back()->with('success', "✅ Đã reset mật khẩu thành công!<br><br>📧 <strong>Email đã được gửi đến:</strong> {$user->email}<br>🔑 <strong>Mật khẩu mới:</strong> <code style='font-size: 16px; background: #f8f9fa; padding: 5px 10px; border-radius: 4px;'>$newPassword</code><br><br><small class='text-muted'>User sẽ nhận được email hướng dẫn đăng nhập với mật khẩu mới.</small>");
+            } catch (\Exception $mailError) {
+                // Nếu gửi email thất bại, vẫn hiển thị password cho admin
+                Log::error('Failed to send password reset email: ' . $mailError->getMessage());
+
+                return back()->with('warning', "⚠️ Reset mật khẩu thành công nhưng không thể gửi email!<br><br>🔑 <strong>Mật khẩu mới:</strong> <code style='font-size: 16px; background: #fff3cd; padding: 5px 10px; border-radius: 4px;'>$newPassword</code><br><br><small class='text-danger'>Lỗi email: {$mailError->getMessage()}</small><br><small class='text-muted'>Vui lòng thông báo mật khẩu này cho người dùng qua các kênh khác.</small>");
+            }
+        } catch (\Exception $e) {
+            return back()->with('error', '❌ Có lỗi khi reset mật khẩu: ' . $e->getMessage());
         }
     }
 

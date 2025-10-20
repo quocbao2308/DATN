@@ -89,7 +89,7 @@
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="mt-3">{{ $nganhs->links() }}</div>
+                    <div class="mt-3">{{ $nganhs->links('pagination::bootstrap-5') }}</div>
                 </div>
             </div>
         </section>

@@ -86,7 +86,7 @@
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="mt-3">{{ $hocKys->links() }}</div>
+                    <div class="mt-3">{{ $hocKys->links('pagination::bootstrap-5') }}</div>
                 </div>
             </div>
         </section>

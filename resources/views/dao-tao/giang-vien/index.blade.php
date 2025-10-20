@@ -33,14 +33,15 @@
                     <form method="GET" action="{{ route('dao-tao.giang-vien.index') }}" class="mb-3">
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <input type="text" name="search" class="form-control" 
-                                    placeholder="Tìm kiếm..." value="{{ request('search') }}">
+                                <input type="text" name="search" class="form-control" placeholder="Tìm kiếm..."
+                                    value="{{ request('search') }}">
                             </div>
                             <div class="col-md-3">
                                 <select name="khoa_id" class="form-select">
                                     <option value="">-- Tất cả khoa --</option>
-                                    @foreach($khoas as $khoa)
-                                        <option value="{{ $khoa->id }}" {{ request('khoa_id') == $khoa->id ? 'selected' : '' }}>
+                                    @foreach ($khoas as $khoa)
+                                        <option value="{{ $khoa->id }}"
+                                            {{ request('khoa_id') == $khoa->id ? 'selected' : '' }}>
                                             {{ $khoa->ten_khoa }}
                                         </option>
                                     @endforeach
@@ -49,8 +50,9 @@
                             <div class="col-md-3">
                                 <select name="trinh_do_id" class="form-select">
                                     <option value="">-- Tất cả trình độ --</option>
-                                    @foreach($trinhDos as $td)
-                                        <option value="{{ $td->id }}" {{ request('trinh_do_id') == $td->id ? 'selected' : '' }}>
+                                    @foreach ($trinhDos as $td)
+                                        <option value="{{ $td->id }}"
+                                            {{ request('trinh_do_id') == $td->id ? 'selected' : '' }}>
                                             {{ $td->ten_trinh_do }}
                                         </option>
                                     @endforeach
@@ -87,19 +89,20 @@
                                         <td>{{ $gv->ho_ten }}</td>
                                         <td>{{ $gv->email }}</td>
                                         <td>{{ $gv->khoa->ten_khoa ?? 'N/A' }}</td>
-                                        <td><span class="badge bg-info">{{ $gv->trinhDo->ten_trinh_do ?? 'N/A' }}</span></td>
+                                        <td><span class="badge bg-info">{{ $gv->trinhDo->ten_trinh_do ?? 'N/A' }}</span>
+                                        </td>
                                         <td>{{ $gv->chuyen_mon ?? 'N/A' }}</td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="{{ route('dao-tao.giang-vien.show', $gv->id) }}" 
+                                                <a href="{{ route('dao-tao.giang-vien.show', $gv->id) }}"
                                                     class="btn btn-sm btn-info" title="Xem">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="{{ route('dao-tao.giang-vien.edit', $gv->id) }}" 
+                                                <a href="{{ route('dao-tao.giang-vien.edit', $gv->id) }}"
                                                     class="btn btn-sm btn-warning" title="Sửa">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <form action="{{ route('dao-tao.giang-vien.destroy', $gv->id) }}" 
+                                                <form action="{{ route('dao-tao.giang-vien.destroy', $gv->id) }}"
                                                     method="POST" class="d-inline"
                                                     onsubmit="return confirm('Bạn có chắc muốn xóa giảng viên này?')">
                                                     @csrf
@@ -122,7 +125,7 @@
 
                     {{-- Pagination --}}
                     <div class="d-flex justify-content-center">
-                        {{ $giangViens->links() }}
+                        {{ $giangViens->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>

@@ -51,5 +51,5 @@
 
 <!-- Pagination -->
 <div class="d-flex justify-content-center">
-    {{ $items->appends(['role' => 'admin'])->links() }}
+    {{ $items->appends(['role' => 'admin'])->links('pagination::bootstrap-5') }}
 </div>
