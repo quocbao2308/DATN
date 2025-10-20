@@ -40,7 +40,6 @@
                         <span>Giảng viên</span>
                     </a>
                 </li>
-
                 {{-- Môn học --}}
                 <li class="sidebar-item {{ request()->is('dao-tao/mon-hoc*') ? 'active' : '' }}">
                     <a href="{{ route('dao-tao.mon-hoc.index') }}" class='sidebar-link'>
@@ -49,18 +48,19 @@
                     </a>
                 </li>
 
+                {{-- Chương trình khung --}}
+                <li class="sidebar-item {{ request()->is('dao-tao/chuong-trinh-khung*') ? 'active' : '' }}">
+                    <a href="{{ route('dao-tao.chuong-trinh-khung.index') }}" class='sidebar-link'>
+                        <i class="bi bi-journal-text"></i>
+                        <span>Chương trình khung</span>
+                    </a>
+                </li>
+
                 {{-- Lớp học phần --}}
                 <li class="sidebar-item {{ request()->is('dao-tao/lop-hoc-phan*') ? 'active' : '' }}">
                     <a href="{{ route('dao-tao.lop-hoc-phan.index') }}" class='sidebar-link'>
                         <i class="bi bi-book-half"></i>
                         <span>Lớp học phần</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-journal-text"></i>
-                        <span>Quản lý Chương trình</span>
                     </a>
                 </li>
 
