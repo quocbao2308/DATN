@@ -116,6 +116,14 @@
                     </ul>
                 </li>
 
+                <!-- Test Thông báo -->
+                <li class="sidebar-item {{ request()->is('admin/test-notifications*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.test-notifications.index') }}" class='sidebar-link'>
+                        <i class="bi bi-bug"></i>
+                        <span>🧪 Test Thông báo</span>
+                    </a>
+                </li>
+
 
             </ul>
         </div>

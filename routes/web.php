@@ -79,6 +79,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::delete('notifications/destroy-multiple', [NotificationManagementController::class, 'destroyMultiple'])->name('notifications.destroyMultiple');
     Route::get('notifications/stats', [NotificationManagementController::class, 'getStats'])->name('notifications.stats');
 
+    // Test Notifications (Development only)
+    Route::get('test-notifications', [\App\Http\Controllers\Admin\TestNotificationController::class, 'index'])->name('test-notifications.index');
+    Route::post('test-notifications/send', [\App\Http\Controllers\Admin\TestNotificationController::class, 'send'])->name('test-notifications.send');
+
     // Quản lý Danh mục
     Route::resource('khoa', KhoaController::class);
     Route::resource('nganh', NganhController::class);
