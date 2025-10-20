@@ -1,0 +1,71 @@
+/* Dashboard Custom Styles */
+
+/* Gradient Headers */
+.card-header.bg-gradient {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Card Shadows */
+.card.shadow-sm {
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.075) !important;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card.shadow-sm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Stats Cards */
+.stats-card-mini {
+    border-left: 3px solid;
+    transition: all 0.3s ease;
+}
+
+.stats-card-mini:hover {
+    transform: translateX(5px);
+}
+
+/* Progress Bars */
+.progress {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+/* Timeline Cards */
+.timeline-card {
+    transition: all 0.3s ease;
+}
+
+.timeline-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Charts */
+.apexcharts-canvas {
+    margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem !important;
+    }
+    
+    h5, h6 {
+        font-size: 0.9rem !important;
+    }
+}

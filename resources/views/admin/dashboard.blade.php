@@ -1,5 +1,9 @@
 @extends('layouts.layout-admin')
 
+@push('styles')
+    <link href="{{ asset('css/dashboard-custom.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
     <div class="page-heading">
         <div class="d-flex justify-content-between align-items-center">
@@ -102,227 +106,234 @@
                 <!-- Charts Row -->
                 <div class="row">
                     <!-- Thống kê Sinh viên -->
-                    <div class="col-12 col-lg-6">
-                        <div class="card">
-                            <div class="card-header bg-success text-white">
-                                <h4 class="mb-0"><i class="bi bi-mortarboard-fill"></i> Thống kê Sinh viên</h4>
+                    <div class="col-12">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0 text-white"><i class="bi bi-mortarboard-fill"></i> Thống kê Sinh viên
+                                    </h4>
+                                    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseSinhVien">
+                                        <i class="bi bi-chevron-down"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="card-body">
-                                <!-- Sinh viên theo trạng thái -->
-                                <div class="mb-4">
-                                    <h6 class="text-muted mb-3"><i class="bi bi-activity"></i> Theo Trạng thái Học tập</h6>
-                                    <div id="chartSinhVienByStatus"></div>
+                                <div class="row">
+                                    <!-- Sinh viên theo trạng thái -->
+                                    <div class="col-md-6 mb-4">
+                                        <h5 class="text-dark fw-bold mb-3 ms-2"><i class="bi bi-activity me-2"></i>Theo
+                                            Trạng thái Học tập</h5>
+                                        <div id="chartSinhVienByStatus"></div>
 
-                                    <!-- Bảng chi tiết -->
-                                    <div class="table-responsive mt-3">
-                                        <table class="table table-sm table-bordered">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Trạng thái</th>
-                                                    <th class="text-end">Số lượng</th>
-                                                    <th class="text-end">Tỷ lệ</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                        <!-- Chi tiết collapse -->
+                                        <div class="collapse show" id="collapseSinhVien">
+                                            <div class="row g-2 mt-3">
                                                 @php $totalSV = $sinhVienHoatDong->sum('total'); @endphp
                                                 @foreach ($sinhVienHoatDong as $status)
-                                                    <tr>
-                                                        <td><strong>{{ $status->ten_trang_thai }}</strong></td>
-                                                        <td class="text-end">{{ number_format($status->total) }} SV</td>
-                                                        <td class="text-end">
-                                                            <span class="badge bg-primary">
+                                                    <div class="col-6">
+                                                        <div class="stats-card-mini border-start border-4 border-primary">
+                                                            <small class="text-muted">{{ $status->ten_trang_thai }}</small>
+                                                            <h5 class="mb-1 text-primary">
+                                                                {{ number_format($status->total) }}
+                                                            </h5>
+                                                            <span class="badge bg-primary bg-opacity-10 text-primary">
                                                                 {{ $totalSV > 0 ? round(($status->total / $totalSV) * 100, 1) : 0 }}%
                                                             </span>
-                                                        </td>
-                                                    </tr>
+                                                        </div>
+                                                    </div>
                                                 @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <!-- Sinh viên theo ngành -->
-                                <div class="mt-4">
-                                    <h6 class="text-muted mb-3"><i class="bi bi-bookmark-fill"></i> Top 5 Ngành có nhiều SV
-                                        nhất</h6>
-                                    <div id="chartSinhVienByNganh"></div>
-
-                                    <!-- Bảng chi tiết -->
-                                    <div class="table-responsive mt-3">
-                                        <table class="table table-sm table-bordered">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Ngành</th>
-                                                    <th class="text-end">Số lượng SV</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($sinhVienByNganh as $index => $nganh)
-                                                    <tr>
-                                                        <td>{{ $index + 1 }}</td>
-                                                        <td><strong>{{ $nganh->ten_nganh }}</strong></td>
-                                                        <td class="text-end">
-                                                            <span class="badge bg-info">{{ number_format($nganh->total) }}
-                                                                SV</span>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Thống kê Giảng viên -->
-                        <div class="col-12 col-lg-6">
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <h4 class="mb-0"><i class="bi bi-person-workspace"></i> Thống kê Giảng viên</h4>
-                                </div>
-                                <div class="card-body">
-                                    <!-- Giảng viên theo trình độ -->
-                                    <div class="mb-4">
-                                        <h6 class="text-muted mb-3"><i class="bi bi-mortarboard"></i> Theo Trình độ</h6>
-                                        <div id="chartGiangVienByTrinhDo"></div>
-
-                                        <!-- Bảng chi tiết -->
-                                        <div class="table-responsive mt-3">
-                                            <table class="table table-sm table-bordered">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th>Trình độ</th>
-                                                        <th class="text-end">Số lượng</th>
-                                                        <th class="text-end">Tỷ lệ</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @php $totalGV = $giangVienByTrinhDo->sum('total'); @endphp
-                                                    @foreach ($giangVienByTrinhDo as $trinhDo)
-                                                        <tr>
-                                                            <td><strong>{{ $trinhDo->ten_trinh_do }}</strong></td>
-                                                            <td class="text-end">{{ number_format($trinhDo->total) }} GV
-                                                            </td>
-                                                            <td class="text-end">
-                                                                <span class="badge bg-warning">
-                                                                    {{ $totalGV > 0 ? round(($trinhDo->total / $totalGV) * 100, 1) : 0 }}%
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <!-- Giảng viên theo khoa -->
-                                    <div class="mt-4">
-                                        <h6 class="text-muted mb-3"><i class="bi bi-building"></i> Theo Khoa</h6>
-                                        <div id="chartGiangVienByKhoa"></div>
+                                    <!-- Sinh viên theo ngành -->
+                                    <div class="col-md-6 mb-4">
+                                        <h5 class="text-dark fw-bold mb-3 ms-2"><i class="bi bi-bookmark-fill me-2"></i>Top
+                                            5 Ngành có nhiều SV nhất</h5>
+                                        <div id="chartSinhVienByNganh"></div>
 
-                                        <!-- Bảng chi tiết -->
-                                        <div class="table-responsive mt-3">
-                                            <table class="table table-sm table-bordered">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th>Khoa</th>
-                                                        <th class="text-end">Số lượng GV</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($giangVienByKhoa as $khoa)
-                                                        <tr>
-                                                            <td><strong>{{ $khoa->ten_khoa }}</strong></td>
-                                                            <td class="text-end">
-                                                                <span
-                                                                    class="badge bg-info">{{ number_format($khoa->total) }}
-                                                                    GV</span>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
+                                        <!-- Progress bars collapse -->
+                                        <div class="collapse show" id="collapseSinhVien">
+                                            <div class="mt-3">
+                                                @php $maxSV = $sinhVienByNganh->max('total'); @endphp
+                                                @foreach ($sinhVienByNganh as $index => $nganh)
+                                                    <div class="mb-3">
+                                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                                            <small class="fw-bold">#{{ $index + 1 }}
+                                                                {{ $nganh->ten_nganh }}</small>
+                                                            <span
+                                                                class="badge bg-primary bg-opacity-10 text-primary">{{ number_format($nganh->total) }}
+                                                                SV</span>
+                                                        </div>
+                                                        <div class="progress" style="height: 8px;">
+                                                            <div class="progress-bar bg-primary"
+                                                                style="width: {{ $maxSV > 0 ? ($nganh->total / $maxSV) * 100 : 0 }}%">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Tăng trưởng Users -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4><i class="bi bi-graph-up text-primary"></i> Tăng trưởng Users (6 tháng gần nhất)
-                                    </h4>
+                <!-- Thống kê Giảng viên -->
+                <div class="col-12">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0 text-white"><i class="bi bi-person-workspace"></i> Thống kê Giảng viên
+                                </h4>
+                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseGiangVien">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Giảng viên theo trình độ -->
+                                <div class="col-md-6 mb-4">
+                                    <h5 class="text-dark fw-bold mb-3 ms-2"><i class="bi bi-mortarboard me-2"></i>Theo
+                                        Trình độ</h5>
+                                    <div id="chartGiangVienByTrinhDo"></div>
+
+                                    <!-- Chi tiết collapse -->
+                                    <div class="collapse show" id="collapseGiangVien">
+                                        <div class="row g-2 mt-3">
+                                            @php $totalGV = $giangVienByTrinhDo->sum('total'); @endphp
+                                            @foreach ($giangVienByTrinhDo as $trinhDo)
+                                                <div class="col-6">
+                                                    <div class="stats-card-mini border-start border-4 border-primary">
+                                                        <small class="text-muted">{{ $trinhDo->ten_trinh_do }}</small>
+                                                        <h5 class="mb-1 text-primary">{{ number_format($trinhDo->total) }}
+                                                        </h5>
+                                                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                            {{ $totalGV > 0 ? round(($trinhDo->total / $totalGV) * 100, 1) : 0 }}%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <div id="chartUsersByMonth"></div>
 
-                                    <!-- Bảng chi tiết -->
-                                    <div class="table-responsive mt-4">
-                                        <table class="table table-sm table-bordered">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Tháng</th>
-                                                    <th class="text-end">Users mới</th>
-                                                    <th class="text-end">Tăng trưởng</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($usersByMonth as $index => $month)
-                                                    <tr>
-                                                        <td><strong>{{ $month->month }}</strong></td>
-                                                        <td class="text-end">
-                                                            <span
-                                                                class="badge bg-primary">{{ number_format($month->total) }}
-                                                                users</span>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            @if ($index > 0)
-                                                                @php
-                                                                    $prevTotal = $usersByMonth[$index - 1]->total;
-                                                                    $growth =
-                                                                        $prevTotal > 0
-                                                                            ? round(
-                                                                                (($month->total - $prevTotal) /
-                                                                                    $prevTotal) *
-                                                                                    100,
-                                                                                1,
-                                                                            )
-                                                                            : 0;
-                                                                @endphp
-                                                                @if ($growth > 0)
-                                                                    <span class="text-success">
-                                                                        <i class="bi bi-arrow-up"></i>
-                                                                        +{{ $growth }}%
-                                                                    </span>
-                                                                @elseif($growth < 0)
-                                                                    <span class="text-danger">
-                                                                        <i class="bi bi-arrow-down"></i>
-                                                                        {{ $growth }}%
-                                                                    </span>
-                                                                @else
-                                                                    <span class="text-muted">0%</span>
+                                <!-- Giảng viên theo khoa -->
+                                <div class="col-md-6 mb-4">
+                                    <h5 class="text-dark fw-bold mb-3 ms-2"><i class="bi bi-building me-2"></i>Theo Khoa
+                                    </h5>
+                                    <div id="chartGiangVienByKhoa"></div>
+
+                                    <!-- Progress bars collapse -->
+                                    <div class="collapse show" id="collapseGiangVien">
+                                        <div class="mt-3">
+                                            @php $maxGV = $giangVienByKhoa->max('total'); @endphp
+                                            @foreach ($giangVienByKhoa as $khoa)
+                                                <div class="mb-3">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <small class="fw-bold">{{ $khoa->ten_khoa }}</small>
+                                                        <span
+                                                            class="badge bg-primary bg-opacity-10 text-primary">{{ number_format($khoa->total) }}
+                                                            GV</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 8px;">
+                                                        <div class="progress-bar bg-primary"
+                                                            style="width: {{ $maxGV > 0 ? ($khoa->total / $maxGV) * 100 : 0 }}%">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tăng trưởng Users -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0 text-white"><i class="bi bi-graph-up"></i> Tăng trưởng Users (6 tháng
+                                        gần nhất)
+                                    </h4>
+                                    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseUsers">
+                                        <i class="bi bi-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="chartUsersByMonth"></div>
+
+                                <!-- Timeline cards collapse -->
+                                <div class="collapse show" id="collapseUsers">
+                                    <div class="row g-3 mt-4">
+                                        @foreach ($usersByMonth as $index => $month)
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="card border-start border-4 border-primary h-100">
+                                                    <div class="card-body p-3">
+                                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                                            <div>
+                                                                <small class="text-muted">{{ $month->month }}</small>
+                                                                <h4 class="mb-0 text-primary">
+                                                                    {{ number_format($month->total) }}</h4>
+                                                                <small class="text-muted">users</small>
+                                                            </div>
+                                                            <div class="text-end">
+                                                                @if ($index > 0)
+                                                                    @php
+                                                                        $prevTotal = $usersByMonth[$index - 1]->total;
+                                                                        $growth =
+                                                                            $prevTotal > 0
+                                                                                ? round(
+                                                                                    (($month->total - $prevTotal) /
+                                                                                        $prevTotal) *
+                                                                                        100,
+                                                                                    1,
+                                                                                )
+                                                                                : 0;
+                                                                    @endphp
+                                                                    @if ($growth > 0)
+                                                                        <span class="badge bg-success">
+                                                                            <i class="bi bi-arrow-up"></i>
+                                                                            {{ $growth }}%
+                                                                        </span>
+                                                                    @elseif($growth < 0)
+                                                                        <span class="badge bg-danger">
+                                                                            <i class="bi bi-arrow-down"></i>
+                                                                            {{ abs($growth) }}%
+                                                                        </span>
+                                                                    @else
+                                                                        <span class="badge bg-secondary">0%</span>
+                                                                    @endif
                                                                 @endif
-                                                            @else
-                                                                <span class="text-muted">-</span>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                                <tr class="table-secondary">
-                                                    <td><strong>Tổng cộng</strong></td>
-                                                    <td class="text-end">
-                                                        <strong>{{ number_format($usersByMonth->sum('total')) }}
-                                                            users</strong>
-                                                    </td>
-                                                    <td></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+
+                                        <!-- Tổng cộng -->
+                                        <div class="col-12">
+                                            <div class="alert alert-primary mb-0">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span><i class="bi bi-info-circle"></i> <strong>Tổng
+                                                            cộng</strong></span>
+                                                    <h4 class="mb-0">{{ number_format($usersByMonth->sum('total')) }}
+                                                        users</h4>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -653,5 +664,20 @@
             }
         };
         new ApexCharts(document.querySelector("#chartUsersByMonth"), optionsUsersByMonth).render();
+
+        // Toggle collapse icon rotation
+        document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(button => {
+            const target = document.querySelector(button.getAttribute('data-bs-target'));
+            if (target) {
+                target.addEventListener('show.bs.collapse', () => {
+                    button.querySelector('i').classList.remove('bi-chevron-down');
+                    button.querySelector('i').classList.add('bi-chevron-up');
+                });
+                target.addEventListener('hide.bs.collapse', () => {
+                    button.querySelector('i').classList.remove('bi-chevron-up');
+                    button.querySelector('i').classList.add('bi-chevron-down');
+                });
+            }
+        });
     </script>
 @endpush
