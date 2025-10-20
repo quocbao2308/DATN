@@ -13,7 +13,7 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        $notifications = ThongBao::where('tai_khoan_id', Auth::id())
+        $notifications = ThongBao::where('nguoi_nhan_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
@@ -21,11 +21,27 @@ class NotificationController extends Controller
     }
 
     /**
+     * Display notification detail.
+     */
+    public function show($id)
+    {
+        $notification = ThongBao::where('nguoi_nhan_id', Auth::id())
+            ->findOrFail($id);
+
+        // Tự động đánh dấu đã đọc khi xem chi tiết
+        if (!$notification->da_doc) {
+            $notification->markAsRead();
+        }
+
+        return view('notifications.show', compact('notification'));
+    }
+
+    /**
      * Mark notification as read.
      */
     public function markAsRead($id)
     {
-        $notification = ThongBao::where('tai_khoan_id', Auth::id())
+        $notification = ThongBao::where('nguoi_nhan_id', Auth::id())
             ->findOrFail($id);
 
         $notification->markAsRead();
@@ -38,7 +54,7 @@ class NotificationController extends Controller
      */
     public function markAllAsRead()
     {
-        ThongBao::where('tai_khoan_id', Auth::id())
+        ThongBao::where('nguoi_nhan_id', Auth::id())
             ->where('da_doc', false)
             ->update(['da_doc' => true]);
 
@@ -50,7 +66,7 @@ class NotificationController extends Controller
      */
     public function getUnreadCount()
     {
-        $count = ThongBao::where('tai_khoan_id', Auth::id())
+        $count = ThongBao::where('nguoi_nhan_id', Auth::id())
             ->where('da_doc', false)
             ->count();
 

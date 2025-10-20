@@ -34,14 +34,13 @@
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
                         @forelse($notifications as $notification)
-                            <a href="{{ $notification->lien_ket ?? '#' }}"
-                                class="list-group-item list-group-item-action {{ !$notification->da_doc ? 'bg-light' : '' }}"
-                                onclick="markAsRead({{ $notification->id }})">
+                            <div class="list-group-item {{ !$notification->da_doc ? 'bg-light' : '' }}"
+                                style="cursor: pointer;" onclick="handleNotificationClick({{ $notification->id }})">
                                 <div class="d-flex w-100">
                                     <div class="flex-shrink-0 me-3">
-                                        <div class="rounded-circle bg-{{ $notification->loai == 'diem' ? 'success' : ($notification->loai == 'lich_hoc' ? 'info' : 'primary') }} d-inline-flex align-items-center justify-content-center"
+                                        <div class="rounded-circle bg-{{ $notification->loai == 'thong_tin' ? 'info' : ($notification->loai == 'canh_bao' ? 'warning' : 'danger') }} d-inline-flex align-items-center justify-content-center"
                                             style="width: 48px; height: 48px;">
-                                            <i class="bi {{ $notification->icon }} text-white fs-4"></i>
+                                            <i class="bi bi-bell-fill text-white fs-4"></i>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
@@ -63,13 +62,14 @@
                                             <i
                                                 class="bi bi-clock me-1"></i>{{ $notification->created_at->format('d/m/Y H:i') }}
                                             <span class="mx-2">•</span>
-                                            <span class="badge {{ $notification->badgeClass }}">
-                                                {{ ucfirst($notification->loai ?? 'Hệ thống') }}
+                                            <span
+                                                class="badge bg-{{ $notification->loai == 'thong_tin' ? 'info' : ($notification->loai == 'canh_bao' ? 'warning' : 'danger') }}">
+                                                {{ $notification->loai == 'thong_tin' ? 'Thông tin' : ($notification->loai == 'canh_bao' ? 'Cảnh báo' : 'Quan trọng') }}
                                             </span>
                                         </small>
                                     </div>
                                 </div>
-                            </a>
+                            </div>
                         @empty
                             <div class="text-center py-5">
                                 <i class="bi bi-bell-slash fs-1 text-muted d-block mb-3"></i>
@@ -89,26 +89,27 @@
     </div>
 
     <script>
-        function markAsRead(notificationId) {
-            fetch(`/notifications/${notificationId}/read`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            });
+        function handleNotificationClick(notificationId) {
+            // Chuyển đến trang chi tiết thông báo
+            window.location.href = `/notifications/${notificationId}`;
         }
 
         function markAllAsRead() {
             fetch('/notifications/mark-all-read', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            }).then(() => {
-                location.reload();
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(() => {
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error marking all as read:', error);
+                    alert('Có lỗi xảy ra khi đánh dấu đã đọc');
+                });
         }
     </script>
 @endsection

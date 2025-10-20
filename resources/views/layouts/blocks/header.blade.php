@@ -13,7 +13,7 @@
                 data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-bell fs-4 text-dark"></i>
                 @php
-                    $unreadCount = \App\Models\HeThong\ThongBao::where('tai_khoan_id', Auth::id())
+                    $unreadCount = \App\Models\HeThong\ThongBao::where('nguoi_nhan_id', Auth::id())
                         ->where('da_doc', false)
                         ->count();
                 @endphp
@@ -39,7 +39,7 @@
                     <hr class="dropdown-divider my-1">
                 </li>
                 @php
-                    $notifications = \App\Models\HeThong\ThongBao::where('tai_khoan_id', Auth::id())
+                    $notifications = \App\Models\HeThong\ThongBao::where('nguoi_nhan_id', Auth::id())
                         ->orderBy('created_at', 'desc')
                         ->limit(10)
                         ->get();
@@ -47,11 +47,11 @@
                 @forelse($notifications as $notification)
                     <li>
                         <a class="dropdown-item {{ !$notification->da_doc ? 'bg-light' : '' }} py-2"
-                            href="{{ $notification->lien_ket ?? '#' }}" onclick="markAsRead({{ $notification->id }})">
+                            href="javascript:void(0)" onclick="handleNotificationClick({{ $notification->id }})">
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
                                     <i
-                                        class="bi {{ $notification->icon }} text-{{ $notification->loai == 'diem' ? 'success' : ($notification->loai == 'lich_hoc' ? 'info' : 'primary') }} fs-5"></i>
+                                        class="bi bi-bell-fill text-{{ $notification->loai == 'thong_tin' ? 'info' : ($notification->loai == 'canh_bao' ? 'warning' : 'danger') }} fs-5"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-2">
                                     <div class="fw-semibold">{{ $notification->tieu_de }}</div>
@@ -161,25 +161,26 @@
 </div>
 
 <script>
-    function markAsRead(notificationId) {
-        fetch(`/notifications/${notificationId}/read`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        });
+    function handleNotificationClick(notificationId) {
+        // Chuyển đến trang chi tiết thông báo
+        window.location.href = `/notifications/${notificationId}`;
     }
 
     function markAllAsRead() {
         fetch('/notifications/mark-all-read', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        }).then(() => {
-            location.reload();
-        });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(() => {
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error marking all as read:', error);
+                alert('Có lỗi xảy ra khi đánh dấu đã đọc');
+            });
     }
 </script>
