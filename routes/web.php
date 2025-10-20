@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\NotificationManagementController;
 use App\Http\Controllers\DaoTao\DaoTaoDashboardController;
 use App\Http\Controllers\GiangVien\GiangVienDashboardController;
 use App\Http\Controllers\SinhVien\SinhVienDashboardController;
@@ -51,6 +52,7 @@ Route::middleware('auth')->group(function () {
 
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
     Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unreadCount');
@@ -71,6 +73,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Quản lý Vai trò
     Route::resource('roles', RoleController::class);
+
+    // Quản lý Thông báo
+    Route::resource('notifications', NotificationManagementController::class);
+    Route::delete('notifications/destroy-multiple', [NotificationManagementController::class, 'destroyMultiple'])->name('notifications.destroyMultiple');
+    Route::get('notifications/stats', [NotificationManagementController::class, 'getStats'])->name('notifications.stats');
+
+    // Test Notifications (Development only)
+    Route::get('test-notifications', [\App\Http\Controllers\Admin\TestNotificationController::class, 'index'])->name('test-notifications.index');
+    Route::post('test-notifications/send', [\App\Http\Controllers\Admin\TestNotificationController::class, 'send'])->name('test-notifications.send');
 
     // Quản lý Danh mục
     Route::resource('khoa', KhoaController::class);

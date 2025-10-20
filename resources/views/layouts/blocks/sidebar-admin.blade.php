@@ -46,6 +46,13 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item {{ request()->is('admin/notifications*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.notifications.index') }}" class='sidebar-link'>
+                        <i class="bi bi-bell-fill"></i>
+                        <span>Quản lý Thông báo</span>
+                    </a>
+                </li>
+
                 <li
                     class="sidebar-item has-sub {{ request()->is('admin/khoa*') || request()->is('admin/nganh*') || request()->is('admin/chuyen-nganh*') || request()->is('admin/trinh-do*') || request()->is('admin/trang-thai*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
@@ -107,6 +114,14 @@
                             </a>
                         </li>
                     </ul>
+                </li>
+
+                <!-- Test Thông báo -->
+                <li class="sidebar-item {{ request()->is('admin/test-notifications*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.test-notifications.index') }}" class='sidebar-link'>
+                        <i class="bi bi-bug"></i>
+                        <span>🧪 Test Thông báo</span>
+                    </a>
                 </li>
 
 
