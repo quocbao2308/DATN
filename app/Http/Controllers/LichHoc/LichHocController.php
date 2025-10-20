@@ -59,14 +59,50 @@ class LichHocController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'lop_hoc_phan_id' => 'required',
-            'ngay' => 'required|date',
-            'gio_bat_dau' => 'required',
-            'gio_ket_thuc' => 'required',
-            'phong_hoc_id' => 'required',
-            'hinh_thuc_buoi_hoc' => 'required',
-            'giang_vien_phu_trach' => 'required'
+            'lop_hoc_phan_id' => 'required|exists:lop_hoc_phan,id',
+            'ngay' => 'required|date|after_or_equal:today',
+            'gio_bat_dau' => ['required', 'regex:/^\d{2}:\d{2}(:\d{2})?$/'],
+            'gio_ket_thuc' => ['required', 'regex:/^\d{2}:\d{2}(:\d{2})?$/', 'after:gio_bat_dau'],
+            'phong_hoc_id' => 'required|exists:phong_hoc,id',
+            'hinh_thuc_buoi_hoc' => 'required|in:offline,online,hybrid',
+            'link_online' => 'nullable|string|max:255|required_if:hinh_thuc_buoi_hoc,online,hybrid',
+            'giang_vien_phu_trach' => 'required|exists:giang_vien,id',
+            'ghi_chu' => 'nullable|string|max:500',
         ]);
+
+        // Kiểm tra trùng phòng học
+        $trungPhong = LichHoc::where('phong_hoc_id', $data['phong_hoc_id'])
+            ->where('ngay', $data['ngay'])
+            ->where(function ($query) use ($data) {
+                $query->whereBetween('gio_bat_dau', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhereBetween('gio_ket_thuc', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhere(function ($q) use ($data) {
+                        $q->where('gio_bat_dau', '<=', $data['gio_bat_dau'])
+                            ->where('gio_ket_thuc', '>=', $data['gio_ket_thuc']);
+                    });
+            })
+            ->exists();
+
+        if ($trungPhong) {
+            return back()->withErrors(['phong_hoc_id' => 'Phòng học đã được sử dụng trong khung giờ này!'])->withInput();
+        }
+
+        // Kiểm tra giảng viên không bị trùng lịch
+        $trungGiangVien = LichHoc::where('giang_vien_phu_trach', $data['giang_vien_phu_trach'])
+            ->where('ngay', $data['ngay'])
+            ->where(function ($query) use ($data) {
+                $query->whereBetween('gio_bat_dau', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhereBetween('gio_ket_thuc', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhere(function ($q) use ($data) {
+                        $q->where('gio_bat_dau', '<=', $data['gio_bat_dau'])
+                            ->where('gio_ket_thuc', '>=', $data['gio_ket_thuc']);
+                    });
+            })
+            ->exists();
+
+        if ($trungGiangVien) {
+            return back()->withErrors(['giang_vien_phu_trach' => 'Giảng viên đã có lịch dạy trùng giờ!'])->withInput();
+        }
 
         LichHoc::create($data);
         return redirect()->route('dao-tao.lich-hoc.index')->with('success', 'Thêm lịch học thành công!');
@@ -98,10 +134,46 @@ class LichHocController extends Controller
             'gio_ket_thuc' => ['required', 'regex:/^\d{2}:\d{2}(:\d{2})?$/', 'after:gio_bat_dau'],
             'phong_hoc_id' => 'required|exists:phong_hoc,id',
             'hinh_thuc_buoi_hoc' => 'required|in:offline,online,hybrid',
-            'link_online' => 'nullable|string|max:255',
-            'giang_vien_phu_trach' => 'nullable|exists:giang_vien,id',
+            'link_online' => 'nullable|string|max:255|required_if:hinh_thuc_buoi_hoc,online,hybrid',
+            'giang_vien_phu_trach' => 'required|exists:giang_vien,id',
             'ghi_chu' => 'nullable|string|max:500',
         ]);
+
+        // Kiểm tra trùng phòng học (ngoại trừ bản ghi hiện tại)
+        $trungPhong = LichHoc::where('phong_hoc_id', $data['phong_hoc_id'])
+            ->where('ngay', $data['ngay'])
+            ->where('id', '!=', $id)
+            ->where(function ($query) use ($data) {
+                $query->whereBetween('gio_bat_dau', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhereBetween('gio_ket_thuc', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhere(function ($q) use ($data) {
+                        $q->where('gio_bat_dau', '<=', $data['gio_bat_dau'])
+                            ->where('gio_ket_thuc', '>=', $data['gio_ket_thuc']);
+                    });
+            })
+            ->exists();
+
+        if ($trungPhong) {
+            return back()->withErrors(['phong_hoc_id' => 'Phòng học đã được sử dụng trong khung giờ này!'])->withInput();
+        }
+
+        // Kiểm tra giảng viên không bị trùng lịch (ngoại trừ bản ghi hiện tại)
+        $trungGiangVien = LichHoc::where('giang_vien_phu_trach', $data['giang_vien_phu_trach'])
+            ->where('ngay', $data['ngay'])
+            ->where('id', '!=', $id)
+            ->where(function ($query) use ($data) {
+                $query->whereBetween('gio_bat_dau', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhereBetween('gio_ket_thuc', [$data['gio_bat_dau'], $data['gio_ket_thuc']])
+                    ->orWhere(function ($q) use ($data) {
+                        $q->where('gio_bat_dau', '<=', $data['gio_bat_dau'])
+                            ->where('gio_ket_thuc', '>=', $data['gio_ket_thuc']);
+                    });
+            })
+            ->exists();
+
+        if ($trungGiangVien) {
+            return back()->withErrors(['giang_vien_phu_trach' => 'Giảng viên đã có lịch dạy trùng giờ!'])->withInput();
+        }
 
         $lichHoc->update($data);
 

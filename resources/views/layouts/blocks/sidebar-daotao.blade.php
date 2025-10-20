@@ -83,6 +83,21 @@
                     </ul>
                 </li>
 
+                {{-- Điểm danh --}}
+                <li class="sidebar-item {{ request()->is('dao-tao/diem-danh*') ? 'active' : '' }}">
+                    <a href="{{ route('dao-tao.diem-danh.index') }}" class='sidebar-link'>
+                        <i class="bi bi-check2-square"></i>
+                        <span>Điểm danh</span>
+                    </a>
+                </li>
+
+                {{-- Học phí --}}
+                <li class="sidebar-item {{ request()->is('dao-tao/hoc-phi*') ? 'active' : '' }}">
+                    <a href="{{ route('dao-tao.hoc-phi.index') }}" class='sidebar-link'>
+                        <i class="bi bi-cash-coin"></i>
+                        <span>Học phí</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-item">
                     <a href="#" class='sidebar-link'>

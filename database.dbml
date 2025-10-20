@@ -282,6 +282,7 @@ Table diem_danh {
   lich_hoc_id int [ref: > lich_hoc.id]
   trang_thai trang_thai_diem_danh_enum
   ngay_diem_danh datetime
+  ghi_chu text
   created_at timestamp
   updated_at timestamp
   indexes { (sinh_vien_id, lich_hoc_id) [unique] }
@@ -369,6 +370,8 @@ Table hoc_phi {
   hoc_ky_id int [ref: > hoc_ky.id]
   so_tien float
   ngay_nop datetime
+  trang_thai varchar [default: 'chua_nop', note: 'chua_nop, da_nop, no']
+  ghi_chu text
   created_at timestamp
   updated_at timestamp
 }

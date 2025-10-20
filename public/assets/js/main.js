@@ -3,6 +3,13 @@ function slideToggle(t,e,o){0===t.clientHeight?j(t,e,o,!0):j(t,e,o)}function sli
 let sidebarItems = document.querySelectorAll('.sidebar-item.has-sub');
 for(var i = 0; i < sidebarItems.length; i++) {
     let sidebarItem = sidebarItems[i];
+    
+    // Auto-open submenu if it has active class on page load
+    let submenu = sidebarItem.querySelector('.submenu');
+    if(submenu && submenu.classList.contains('active')) {
+        submenu.style.display = "block";
+    }
+    
 	sidebarItems[i].querySelector('.sidebar-link').addEventListener('click', function(e) {
         e.preventDefault();
         
