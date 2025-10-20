@@ -21,6 +21,8 @@ return new class extends Migration
             $table->enum('hinh_thuc_day', ['offline', 'online', 'hybrid']);
             $table->unsignedSmallInteger('thoi_luong')->nullable();
             $table->unsignedTinyInteger('so_buoi')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

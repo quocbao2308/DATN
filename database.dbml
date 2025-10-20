@@ -41,12 +41,16 @@ Table users {
 Table vai_tro {
   id int [pk]
   ten_vai_tro varchar [not null, unique] // Admin, Trưởng Phòng Đào Tạo, Nhân Viên Đào Tạo, Giảng Viên Chủ Nhiệm, Giảng Viên, Sinh Viên
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table tai_khoan_vai_tro {
   id int [pk]
   tai_khoan_id int [ref: > users.id, note: 'Reference tới users.id']
   vai_tro_id int [ref: > vai_tro.id]
+  created_at timestamp
+  updated_at timestamp
   indexes { (tai_khoan_id, vai_tro_id) [unique] }
 }
 
@@ -54,12 +58,16 @@ Table quyen {
   id int [pk]
   ma_quyen varchar [not null, unique]
   mo_ta varchar
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table vai_tro_quyen {
   id int [pk]
   vai_tro_id int [ref: > vai_tro.id]
   quyen_id int [ref: > quyen.id]
+  created_at timestamp
+  updated_at timestamp
   indexes { (vai_tro_id, quyen_id) [unique] }
 }
 
@@ -71,6 +79,9 @@ Table admin {
   so_dien_thoai varchar
   anh_dai_dien varchar [note: 'Ảnh đại diện của admin']
   user_id int [ref: > users.id, note: 'Foreign key tới bảng users']
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp [note: 'Soft delete']
 }
 
 Table dao_tao {
@@ -80,6 +91,9 @@ Table dao_tao {
   so_dien_thoai varchar
   anh_dai_dien varchar [note: 'Ảnh đại diện của đào tạo']
   user_id int [ref: > users.id, note: 'Foreign key tới bảng users']
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp [note: 'Soft delete']
 }
 
 // ======================== Sinh viên ========================
@@ -102,9 +116,12 @@ Table sinh_vien {
   khoa_hoc_id int [ref: > khoa_hoc.id]
   nganh_id int [ref: > nganh.id]
   chuyen_nganh_id int [ref: > chuyen_nganh.id]
-  ky_hien_tai int
+  ky_hien_tai int [default: 1]
   trang_thai_hoc_tap_id int [ref: > trang_thai_hoc_tap.id]
   user_id int [ref: > users.id, note: 'Foreign key tới bảng users']
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp [note: 'Soft delete']
 }
 
 // ======================== GV========================
@@ -120,11 +137,16 @@ Table giang_vien {
   ngay_vao_truong date
   anh_dai_dien varchar
   user_id int [ref: > users.id, note: 'Foreign key tới bảng users']
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp [note: 'Soft delete']
 }
 
 Table dm_trinh_do {
   id int [pk]
   ten_trinh_do varchar [not null, unique]
+  created_at timestamp
+  updated_at timestamp
 }
 
 // ======================== Môn học và học phần ========================
@@ -138,11 +160,16 @@ Table mon_hoc {
   hinh_thuc_day hinh_thuc_enum
   thoi_luong int
   so_buoi int
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp [note: 'Soft delete']
 }
 
 Table mon_hoc_tien_quyet {
   mon_hoc_id int [ref: > mon_hoc.id]
   mon_tien_quyet_id int [ref: > mon_hoc.id]
+  created_at timestamp
+  updated_at timestamp
   indexes { (mon_hoc_id, mon_tien_quyet_id) [pk] }
 }
 
@@ -156,12 +183,17 @@ Table lop_hoc_phan {
   link_online varchar
   ghi_chu text
   trang_thai_lop trang_thai_lop_enum
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp [note: 'Soft delete']
 }
 
 Table lop_hoc_phan_giang_vien {
   lop_hoc_phan_id int [ref: > lop_hoc_phan.id]
   giang_vien_id int [ref: > giang_vien.id]
   vai_tro varchar
+  created_at timestamp
+  updated_at timestamp
   indexes { (lop_hoc_phan_id, giang_vien_id) [pk] }
 }
 
@@ -177,6 +209,8 @@ Table lich_hoc {
   link_online varchar
   giang_vien_phu_trach int [ref: > giang_vien.id]
   ghi_chu text
+  created_at timestamp
+  updated_at timestamp
   indexes { (ngay, gio_bat_dau, phong_hoc_id) [unique] }
 }
 
@@ -191,6 +225,8 @@ Table lich_thi {
   link_online varchar
   file_pdf varchar
   ngay_gui datetime
+  created_at timestamp
+  updated_at timestamp
 }
 
 // ======================== Điểm, đăng ký ========================
@@ -203,6 +239,8 @@ Table dang_ky_mon_hoc {
   diem_he_4 float
   diem_chu varchar
   qua_mon boolean [default: false]
+  created_at timestamp
+  updated_at timestamp
   indexes { (sinh_vien_id, lop_hoc_phan_id) [unique] }
 }
 
@@ -211,6 +249,8 @@ Table cau_hinh_dau_diem {
   lop_hoc_phan_id int [ref: > lop_hoc_phan.id]
   ten_dau_diem varchar [not null]
   ty_le float
+  created_at timestamp
+  updated_at timestamp
   indexes { (lop_hoc_phan_id, ten_dau_diem) [unique] }
 }
 
@@ -219,6 +259,8 @@ Table nhap_diem {
   sinh_vien_id int [ref: > sinh_vien.id]
   cau_hinh_id int [ref: > cau_hinh_dau_diem.id]
   diem_so float
+  created_at timestamp
+  updated_at timestamp
   indexes { (sinh_vien_id, cau_hinh_id) [unique] }
 }
 
@@ -229,6 +271,8 @@ Table bang_diem {
   diem_trung_binh_hoc_ky float
   diem_trung_binh_tich_luy float
   tong_tin_chi_dat int
+  created_at timestamp
+  updated_at timestamp
   indexes { (sinh_vien_id, hoc_ky_id) [unique] }
 }
 
@@ -238,6 +282,8 @@ Table diem_danh {
   lich_hoc_id int [ref: > lich_hoc.id]
   trang_thai trang_thai_diem_danh_enum
   ngay_diem_danh datetime
+  created_at timestamp
+  updated_at timestamp
   indexes { (sinh_vien_id, lich_hoc_id) [unique] }
 }
 
@@ -245,12 +291,16 @@ Table diem_danh {
 Table khoa {
   id int [pk]
   ten_khoa varchar [not null, unique]
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table nganh {
   id int [pk]
   ten_nganh varchar [not null]
   khoa_id int [ref: > khoa.id]
+  created_at timestamp
+  updated_at timestamp
   indexes { (ten_nganh, khoa_id) [unique] }
 }
 
@@ -258,6 +308,8 @@ Table chuyen_nganh {
   id int [pk]
   ten_chuyen_nganh varchar [not null]
   nganh_id int [ref: > nganh.id]
+  created_at timestamp
+  updated_at timestamp
   indexes { (ten_chuyen_nganh, nganh_id) [unique] }
 }
 
@@ -265,8 +317,10 @@ Table chuong_trinh_khung {
   id int [pk]
   chuyen_nganh_id int [ref: > chuyen_nganh.id]
   mon_hoc_id int [ref: > mon_hoc.id]
-  hoc_ky_goi_y int
-  loai_mon_hoc varchar
+  hoc_ky_goi_y int [note: 'Học kỳ gợi ý (1-8)']
+  loai_mon_hoc varchar [note: 'Bắt buộc, Chuyên ngành, Tự chọn']
+  created_at timestamp
+  updated_at timestamp
   indexes { (chuyen_nganh_id, mon_hoc_id) [unique] }
 }
 
@@ -277,6 +331,8 @@ Table khoa_hoc {
   nam_bat_dau int
   nam_ket_thuc int
   mo_ta text [note: 'Mô tả khóa học']
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table hoc_ky {
@@ -288,6 +344,8 @@ Table hoc_ky {
   ngay_bat_dau date
   ngay_ket_thuc date
   mo_ta text [note: 'Mô tả học kỳ']
+  created_at timestamp
+  updated_at timestamp
   indexes { (ten_hoc_ky, khoa_hoc_id) [unique] }
 }
 
@@ -301,6 +359,8 @@ Table phong_hoc {
   loai_phong varchar [note: 'Lý thuyết, Thực hành, Hội trường, Phòng máy']
   trang_thai varchar [default: 'Hoạt động', note: 'Hoạt động, Bảo trì, Không sử dụng']
   mo_ta text
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table hoc_phi {
@@ -309,11 +369,15 @@ Table hoc_phi {
   hoc_ky_id int [ref: > hoc_ky.id]
   so_tien float
   ngay_nop datetime
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table trang_thai_hoc_tap {
   id int [pk]
   ten_trang_thai varchar [not null, unique]
+  created_at timestamp
+  updated_at timestamp
 }
 
 // ======================== Chat bot========================
@@ -324,6 +388,8 @@ Table ai_chatbot_knowledge_base {
   cau_tra_loi text [not null]
   tu_khoa varchar
   ngay_cap_nhat datetime
+  created_at timestamp
+  updated_at timestamp
 }
 
 Table ai_chatbot_log {
@@ -334,6 +400,8 @@ Table ai_chatbot_log {
   cau_tra_loi_bot text
   do_hai_long int
   thoi_gian timestamp [default: `now()`]
+  created_at timestamp
+  updated_at timestamp
 }
 
 // ======================== Thông báo========================
