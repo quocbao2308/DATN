@@ -75,7 +75,7 @@
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="mt-3">{{ $trinhDos->links() }}</div>
+                    <div class="mt-3">{{ $trinhDos->links('pagination::bootstrap-5') }}</div>
                 </div>
             </div>
         </section>

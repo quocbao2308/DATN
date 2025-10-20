@@ -33,14 +33,15 @@
                     <form method="GET" action="{{ route('dao-tao.sinh-vien.index') }}" class="mb-3">
                         <div class="row g-3">
                             <div class="col-md-3">
-                                <input type="text" name="search" class="form-control" 
-                                    placeholder="Tìm kiếm..." value="{{ request('search') }}">
+                                <input type="text" name="search" class="form-control" placeholder="Tìm kiếm..."
+                                    value="{{ request('search') }}">
                             </div>
                             <div class="col-md-2">
                                 <select name="khoa_id" class="form-select">
                                     <option value="">-- Tất cả khoa --</option>
-                                    @foreach($khoas as $khoa)
-                                        <option value="{{ $khoa->id }}" {{ request('khoa_id') == $khoa->id ? 'selected' : '' }}>
+                                    @foreach ($khoas as $khoa)
+                                        <option value="{{ $khoa->id }}"
+                                            {{ request('khoa_id') == $khoa->id ? 'selected' : '' }}>
                                             {{ $khoa->ten_khoa }}
                                         </option>
                                     @endforeach
@@ -49,8 +50,9 @@
                             <div class="col-md-2">
                                 <select name="nganh_id" class="form-select">
                                     <option value="">-- Tất cả ngành --</option>
-                                    @foreach($nganhs as $nganh)
-                                        <option value="{{ $nganh->id }}" {{ request('nganh_id') == $nganh->id ? 'selected' : '' }}>
+                                    @foreach ($nganhs as $nganh)
+                                        <option value="{{ $nganh->id }}"
+                                            {{ request('nganh_id') == $nganh->id ? 'selected' : '' }}>
                                             {{ $nganh->ten_nganh }}
                                         </option>
                                     @endforeach
@@ -59,8 +61,9 @@
                             <div class="col-md-2">
                                 <select name="khoa_hoc_id" class="form-select">
                                     <option value="">-- Tất cả khóa --</option>
-                                    @foreach($khoaHocs as $khoaHoc)
-                                        <option value="{{ $khoaHoc->id }}" {{ request('khoa_hoc_id') == $khoaHoc->id ? 'selected' : '' }}>
+                                    @foreach ($khoaHocs as $khoaHoc)
+                                        <option value="{{ $khoaHoc->id }}"
+                                            {{ request('khoa_hoc_id') == $khoaHoc->id ? 'selected' : '' }}>
                                             {{ $khoaHoc->ten_khoa_hoc }}
                                         </option>
                                     @endforeach
@@ -69,8 +72,9 @@
                             <div class="col-md-2">
                                 <select name="trang_thai_id" class="form-select">
                                     <option value="">-- Trạng thái --</option>
-                                    @foreach($trangThais as $tt)
-                                        <option value="{{ $tt->id }}" {{ request('trang_thai_id') == $tt->id ? 'selected' : '' }}>
+                                    @foreach ($trangThais as $tt)
+                                        <option value="{{ $tt->id }}"
+                                            {{ request('trang_thai_id') == $tt->id ? 'selected' : '' }}>
                                             {{ $tt->ten_trang_thai }}
                                         </option>
                                     @endforeach
@@ -115,15 +119,15 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="{{ route('dao-tao.sinh-vien.show', $sv->id) }}" 
+                                                <a href="{{ route('dao-tao.sinh-vien.show', $sv->id) }}"
                                                     class="btn btn-sm btn-info" title="Xem">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="{{ route('dao-tao.sinh-vien.edit', $sv->id) }}" 
+                                                <a href="{{ route('dao-tao.sinh-vien.edit', $sv->id) }}"
                                                     class="btn btn-sm btn-warning" title="Sửa">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <form action="{{ route('dao-tao.sinh-vien.destroy', $sv->id) }}" 
+                                                <form action="{{ route('dao-tao.sinh-vien.destroy', $sv->id) }}"
                                                     method="POST" class="d-inline"
                                                     onsubmit="return confirm('Bạn có chắc muốn xóa sinh viên này?')">
                                                     @csrf
@@ -146,7 +150,7 @@
 
                     {{-- Pagination --}}
                     <div class="d-flex justify-content-center">
-                        {{ $sinhViens->links() }}
+                        {{ $sinhViens->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>

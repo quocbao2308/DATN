@@ -32,6 +32,27 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item {{ request()->is('admin/roles*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.roles.index') }}" class='sidebar-link'>
+                        <i class="bi bi-shield-check"></i>
+                        <span>Quản lý Vai trò</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{ request()->is('admin/permissions*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.permissions.index') }}" class='sidebar-link'>
+                        <i class="bi bi-key-fill"></i>
+                        <span>Quản lý Quyền</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{ request()->is('admin/notifications*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.notifications.index') }}" class='sidebar-link'>
+                        <i class="bi bi-bell-fill"></i>
+                        <span>Quản lý Thông báo</span>
+                    </a>
+                </li>
+
                 <li
                     class="sidebar-item has-sub {{ request()->is('admin/khoa*') || request()->is('admin/nganh*') || request()->is('admin/chuyen-nganh*') || request()->is('admin/trinh-do*') || request()->is('admin/trang-thai*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
@@ -75,12 +96,35 @@
                     </ul>
                 </li>
 
-                <li class="sidebar-item {{ request()->is('admin/phong-hoc*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.phong-hoc.index') }}" class='sidebar-link'>
+                <li class="sidebar-item has-sub {{ request()->is('admin/phong-hoc*') ? 'active' : '' }}">
+                    <a href="#" class="sidebar-link">
                         <i class="bi bi-door-open"></i>
                         <span>Quản lý Phòng học</span>
                     </a>
+
+                    <ul class="submenu {{ request()->is('admin/phong-hoc*') ? 'submenu-open' : '' }}">
+                        <li class="submenu-item {{ request()->is('admin/phong-hoc') ? 'active' : '' }}">
+                            <a href="{{ route('admin.phong-hoc.index') }}">
+                                Danh sách phòng
+                            </a>
+                        </li>
+                        <li class="submenu-item {{ request()->is('admin/phong-hoc/create') ? 'active' : '' }}">
+                            <a href="{{ route('admin.phong-hoc.create') }}">
+                                Thêm phòng học
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
+                <!-- Test Thông báo -->
+                <li class="sidebar-item {{ request()->is('admin/test-notifications*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.test-notifications.index') }}" class='sidebar-link'>
+                        <i class="bi bi-bug"></i>
+                        <span>🧪 Test Thông báo</span>
+                    </a>
+                </li>
+
+
             </ul>
         </div>
     </div>

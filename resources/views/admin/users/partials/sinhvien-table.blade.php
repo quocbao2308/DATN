@@ -80,5 +80,5 @@
 
 <!-- Pagination -->
 <div class="d-flex justify-content-center">
-    {{ $items->appends(['role' => 'sinh_vien'])->links() }}
+    {{ $items->appends(['role' => 'sinh_vien'])->links('pagination::bootstrap-5') }}
 </div>

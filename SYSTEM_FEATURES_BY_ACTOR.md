@@ -52,13 +52,13 @@ Quản trị viên hệ thống, quản lý toàn bộ người dùng và hệ t
 
 _Bảng: `users`, `tai_khoan_vai_tro`_
 
-| STT | Chức năng      | Mô tả chi tiết                          | Database | Priority | Status     |
-| --- | -------------- | --------------------------------------- | -------- | -------- | ---------- |
-| 1   | Xem tài khoản  | Danh sách tất cả users trong hệ thống   | users    | High     | ✅ Done    |
-| 2   | Tạo tài khoản  | Tạo account mới (email, password, name) | users    | High     | ✅ Done    |
-| 3   | Sửa tài khoản  | Cập nhật thông tin user, đổi password   | users    | High     | ✅ Done    |
-| 4   | Xóa tài khoản  | Xóa user (soft delete)                  | users    | Medium   | ✅ Done    |
-| 5   | Reset mật khẩu | Reset password cho user                 | users    | Medium   | 🔄 Planned |
+| STT | Chức năng      | Mô tả chi tiết                          | Database | Priority | Status  |
+| --- | -------------- | --------------------------------------- | -------- | -------- | ------- |
+| 1   | Xem tài khoản  | Danh sách tất cả users trong hệ thống   | users    | High     | ✅ Done |
+| 2   | Tạo tài khoản  | Tạo account mới (email, password, name) | users    | High     | ✅ Done |
+| 3   | Sửa tài khoản  | Cập nhật thông tin user, đổi password   | users    | High     | ✅ Done |
+| 4   | Xóa tài khoản  | Xóa user (soft delete)                  | users    | Medium   | ✅ Done |
+| 5   | Reset mật khẩu | Reset password cho user                 | users    | Medium   | ✅ Done |
 
 ---
 
@@ -78,12 +78,12 @@ _Bảng: `vai_tro`, `tai_khoan_vai_tro`_
 
 _Bảng: `vai_tro`_
 
-| STT | Chức năng       | Mô tả chi tiết               | Database | Priority | Status     |
-| --- | --------------- | ---------------------------- | -------- | -------- | ---------- |
-| 9   | Xem vai trò     | Danh sách 7 vai trò hệ thống | vai_tro  | Medium   | 🔄 Planned |
-| 10  | Tạo vai trò mới | Thêm vai trò mới (nếu cần)   | vai_tro  | Low      | 🔄 Planned |
-| 11  | Sửa vai trò     | Đổi tên vai trò              | vai_tro  | Low      | 🔄 Planned |
-| 12  | Xóa vai trò     | Xóa vai trò (nếu không dùng) | vai_tro  | Low      | 🔄 Planned |
+| STT | Chức năng       | Mô tả chi tiết               | Database | Priority | Status  |
+| --- | --------------- | ---------------------------- | -------- | -------- | ------- |
+| 9   | Xem vai trò     | Danh sách 7 vai trò hệ thống | vai_tro  | Medium   | ✅ Done |
+| 10  | Tạo vai trò mới | Thêm vai trò mới (nếu cần)   | vai_tro  | Low      | ✅ Done |
+| 11  | Sửa vai trò     | Đổi tên vai trò              | vai_tro  | Low      | ✅ Done |
+| 12  | Xóa vai trò     | Xóa vai trò (nếu không dùng) | vai_tro  | Low      | ✅ Done |
 
 ---
 
@@ -91,13 +91,13 @@ _Bảng: `vai_tro`_
 
 _Bảng: `quyen`, `vai_tro_quyen`_
 
-| STT | Chức năng             | Mô tả chi tiết                    | Database      | Priority | Status     |
-| --- | --------------------- | --------------------------------- | ------------- | -------- | ---------- |
-| 13  | Xem quyền             | Danh sách 30 quyền                | quyen         | Medium   | 🔄 Planned |
-| 14  | Tạo quyền             | Thêm quyền mới (xem, sửa, xóa...) | quyen         | Low      | 🔄 Planned |
-| 15  | Sửa quyền             | Cập nhật mô tả quyền              | quyen         | Low      | 🔄 Planned |
-| 16  | Xóa quyền             | Xóa quyền                         | quyen         | Low      | 🔄 Planned |
-| 17  | Gán quyền cho vai trò | Mapping quyền vào vai trò         | vai_tro_quyen | High     | ✅ Done    |
+| STT | Chức năng             | Mô tả chi tiết                    | Database      | Priority | Status  |
+| --- | --------------------- | --------------------------------- | ------------- | -------- | ------- |
+| 13  | Xem quyền             | Danh sách 30 quyền                | quyen         | Medium   | ✅ Done |
+| 14  | Tạo quyền             | Thêm quyền mới (xem, sửa, xóa...) | quyen         | Low      | ✅ Done |
+| 15  | Sửa quyền             | Cập nhật mô tả quyền              | quyen         | Low      | ✅ Done |
+| 16  | Xóa quyền             | Xóa quyền                         | quyen         | Low      | ✅ Done |
+| 17  | Gán quyền cho vai trò | Mapping quyền vào vai trò         | vai_tro_quyen | High     | ✅ Done |
 
 ---
 

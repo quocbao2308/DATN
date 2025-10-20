@@ -86,7 +86,7 @@
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="mt-3">{{ $khoaHocs->links() }}</div>
+                    <div class="mt-3">{{ $khoaHocs->links('pagination::bootstrap-5') }}</div>
                 </div>
             </div>
         </section>

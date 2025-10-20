@@ -30,23 +30,19 @@
                 </div>
 
                 <div class="card-body">
+                    {{-- Thông báo --}}
+                    @if(session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+
                     {{-- Bộ lọc --}}
                     <form method="GET" action="{{ route('dao-tao.lop-hoc-phan.index') }}" class="mb-3">
                         <div class="row g-3">
-                            <div class="col-md-3">
-                                <input type="text" name="search" class="form-control" 
-                                    placeholder="Tìm kiếm lớp học phần..." value="{{ request('search') }}">
+                            <div class="col-md-4">
+                                <input type="text" name="search" class="form-control"
+                                       placeholder="Tìm kiếm lớp học phần..." value="{{ request('search') }}">
                             </div>
-                            <div class="col-md-3">
-                                <select name="mon_hoc_id" class="form-select">
-                                    <option value="">-- Tất cả môn học --</option>
-                                    @foreach($monHocs as $mon)
-                                        <option value="{{ $mon->id }}" {{ request('mon_hoc_id') == $mon->id ? 'selected' : '' }}>
-                                            {{ $mon->ten_mon }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+
                             <div class="col-md-3">
                                 <select name="hoc_ky_id" class="form-select">
                                     <option value="">-- Tất cả học kỳ --</option>
@@ -57,18 +53,18 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-2">
-                                <select name="trang_thai_lop" class="form-select">
-                                    <option value="">-- Trạng thái --</option>
-                                    <option value="mo_dang_ky" {{ request('trang_thai_lop') == 'mo_dang_ky' ? 'selected' : '' }}>Mở đăng ký</option>
-                                    <option value="dang_hoc" {{ request('trang_thai_lop') == 'dang_hoc' ? 'selected' : '' }}>Đang học</option>
-                                    <option value="ket_thuc" {{ request('trang_thai_lop') == 'ket_thuc' ? 'selected' : '' }}>Kết thúc</option>
-                                    <option value="huy" {{ request('trang_thai_lop') == 'huy' ? 'selected' : '' }}>Hủy</option>
+
+                            <div class="col-md-3">
+                                <select name="trang_thai" class="form-select">
+                                    <option value="">-- Tất cả trạng thái --</option>
+                                    <option value="mo" {{ request('trang_thai') == 'mo' ? 'selected' : '' }}>Mở</option>
+                                    <option value="dong" {{ request('trang_thai') == 'dong' ? 'selected' : '' }}>Đóng</option>
                                 </select>
                             </div>
-                            <div class="col-md-1">
+
+                            <div class="col-md-2">
                                 <button type="submit" class="btn btn-primary w-100">
-                                    <i class="bi bi-search"></i>
+                                    <i class="bi bi-search"></i> Tìm
                                 </button>
                             </div>
                         </div>
@@ -76,61 +72,46 @@
 
                     {{-- Bảng dữ liệu --}}
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover">
+                        <table class="table table-striped table-hover align-middle">
                             <thead>
                                 <tr>
                                     <th>STT</th>
                                     <th>Mã lớp HP</th>
                                     <th>Môn học</th>
                                     <th>Học kỳ</th>
-                                    <th>Hình thức</th>
                                     <th>Sức chứa</th>
+                                    <th>Hình thức</th>
                                     <th>Trạng thái</th>
                                     <th>Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($lopHocPhans as $index => $lop)
+                                @forelse ($lopHocPhans as $index => $lhp)
                                     <tr>
                                         <td>{{ $lopHocPhans->firstItem() + $index }}</td>
-                                        <td><strong>{{ $lop->ma_lop_hp }}</strong></td>
-                                        <td>{{ $lop->monHoc->ten_mon ?? 'N/A' }}</td>
-                                        <td>{{ $lop->hocKy->ten_hoc_ky ?? 'N/A' }}</td>
+                                        <td><strong>{{ $lhp->ma_lop_hp }}</strong></td>
+                                        <td>{{ $lhp->monHoc->ten_mon ?? 'Chưa có' }}</td>
+                                        <td>{{ $lhp->hocKy->ten_hoc_ky ?? 'Chưa có' }}</td>
+                                        <td>{{ $lhp->suc_chua ?? '-' }}</td>
+                                        <td>{{ ucfirst($lhp->hinh_thuc) }}</td>
                                         <td>
-                                            <span class="badge bg-info text-dark">  
-                                                {{ ucfirst($lop->hinh_thuc) }}
+                                            <span class="badge {{ $lhp->trang_thai_lop === 'mo' ? 'bg-success' : 'bg-secondary' }}">
+                                                {{ ucfirst($lhp->trang_thai_lop) }}
                                             </span>
-                                        </td>
-                                        <td>{{ $lop->suc_chua ?? '—' }}</td>
-                                        <td>
-                                            @switch($lop->trang_thai_lop)
-                                                @case('mo_dang_ky')
-                                                    <span class="badge bg-success">Mở đăng ký</span>
-                                                    @break
-                                                @case('dang_hoc')
-                                                    <span class="badge bg-primary">Đang học</span>
-                                                    @break
-                                                @case('ket_thuc')
-                                                    <span class="badge bg-secondary">Kết thúc</span>
-                                                    @break
-                                                @case('huy')
-                                                    <span class="badge bg-danger">Hủy</span>
-                                                    @break
-                                            @endswitch
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="{{ route('dao-tao.lop-hoc-phan.show', $lop->id) }}" 
-                                                    class="btn btn-sm btn-info" title="Xem">
+                                                <a href="{{ route('dao-tao.lop-hoc-phan.show', $lhp->id) }}" 
+                                                   class="btn btn-sm btn-info" title="Xem">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="{{ route('dao-tao.lop-hoc-phan.edit', $lop->id) }}" 
-                                                    class="btn btn-sm btn-warning" title="Sửa">
+                                                <a href="{{ route('dao-tao.lop-hoc-phan.edit', $lhp->id) }}" 
+                                                   class="btn btn-sm btn-warning" title="Sửa">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <form action="{{ route('dao-tao.lop-hoc-phan.destroy', $lop->id) }}" 
-                                                    method="POST" class="d-inline"
-                                                    onsubmit="return confirm('Bạn có chắc muốn xóa lớp học phần này?')">
+                                                <form action="{{ route('dao-tao.lop-hoc-phan.destroy', $lhp->id) }}" 
+                                                      method="POST" class="d-inline"
+                                                      onsubmit="return confirm('Bạn có chắc muốn xóa lớp học phần này?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-danger" title="Xóa">

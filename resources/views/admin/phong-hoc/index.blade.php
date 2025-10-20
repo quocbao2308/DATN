@@ -91,7 +91,7 @@
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="mt-3">{{ $phongHocs->links() }}</div>
+                    <div class="mt-3">{{ $phongHocs->links('pagination::bootstrap-5') }}</div>
                 </div>
             </div>
         </section>

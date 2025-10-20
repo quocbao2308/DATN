@@ -4,7 +4,7 @@ namespace App\Models\HeThong;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Auth\TaiKhoan;
+use App\Models\User;
 
 class ThongBao extends Model
 {
@@ -13,12 +13,15 @@ class ThongBao extends Model
     protected $table = 'thong_bao';
 
     protected $fillable = [
-        'tai_khoan_id',
+        'nguoi_nhan_id',
+        'nguoi_tao_id',
         'tieu_de',
         'noi_dung',
         'loai',
         'lien_ket',
         'da_doc',
+        'vai_tro_nhan', // all, admin, dao_tao, giang_vien, sinh_vien
+        'batch_id', // ID nhóm để nhóm các thông báo cùng lúc gửi
     ];
 
     protected $casts = [
@@ -30,9 +33,14 @@ class ThongBao extends Model
     /**
      * Relationships
      */
-    public function taiKhoan()
+    public function nguoiNhan()
     {
-        return $this->belongsTo(TaiKhoan::class, 'tai_khoan_id');
+        return $this->belongsTo(User::class, 'nguoi_nhan_id');
+    }
+
+    public function nguoiTao()
+    {
+        return $this->belongsTo(User::class, 'nguoi_tao_id');
     }
 
     /**
@@ -48,13 +56,16 @@ class ThongBao extends Model
         return $query->where('da_doc', true);
     }
 
-    public function scopeByType($query, $type)
+    public function scopeByRole($query, $role)
     {
-        return $query->where('loai', $type);
+        return $query->where(function ($q) use ($role) {
+            $q->where('vai_tro_nhan', $role)
+                ->orWhere('vai_tro_nhan', 'all');
+        });
     }
 
     /**
-     * Helper methods
+     * Mark as read
      */
     public function markAsRead()
     {
@@ -64,5 +75,10 @@ class ThongBao extends Model
     public function markAsUnread()
     {
         $this->update(['da_doc' => false]);
+    }
+
+    public function scopeByType($query, $type)
+    {
+        return $query->where('loai', $type);
     }
 }
