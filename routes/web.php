@@ -108,6 +108,9 @@ Route::prefix('dao-tao')->name('dao-tao.')->middleware(['auth'])->group(function
     // Quản lý Giảng viên
     Route::resource('giang-vien', \App\Http\Controllers\DaoTao\GiangVienController::class);
 
+    // Quản lý Môn học
+    Route::resource('mon-hoc', \App\Http\Controllers\DaoTao\MonHocController::class);
+
     // Quản lý lịch học phần
     Route::resource('lop-hoc-phan', \App\Http\Controllers\LichHoc\LopHocPhanController::class);
 
