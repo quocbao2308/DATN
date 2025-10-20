@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models\LichHoc;
 
 use App\Models\LichHoc\LopHocPhan;
@@ -23,13 +24,20 @@ class LichThi extends Model
         'ngay_gui'
     ];
 
-    public function lopHocPhan() {
+    protected $casts = [
+        'ngay_thi' => 'date',
+        'gio_bat_dau' => 'datetime:H:i',
+        'gio_ket_thuc' => 'datetime:H:i',
+        'ngay_gui' => 'datetime',
+    ];
+
+    public function lopHocPhan()
+    {
         return $this->belongsTo(LopHocPhan::class);
     }
 
-    public function phongHoc() {
+    public function phongHoc()
+    {
         return $this->belongsTo(PhongHoc::class);
     }
 }
-
-?>

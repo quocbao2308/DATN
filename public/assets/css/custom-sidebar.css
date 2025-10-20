@@ -1,0 +1,54 @@
+/* Custom Sidebar Styles for Better Submenu Active State */
+
+/* Submenu item hover - add background */
+.sidebar-wrapper .menu .submenu .submenu-item a:hover {
+    margin-left: 0.3rem;
+    background-color: rgba(67, 94, 190, 0.08);
+    border-radius: 8px;
+    color: #435ebe !important;
+}
+
+/* Submenu item active - stronger visual feedback */
+.sidebar-wrapper .menu .submenu .submenu-item.active > a {
+    color: #435ebe !important;
+    font-weight: 700 !important;
+    background-color: rgba(67, 94, 190, 0.12);
+    border-radius: 8px;
+    position: relative;
+}
+
+/* Add left border indicator for active submenu item */
+.sidebar-wrapper .menu .submenu .submenu-item.active > a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background-color: #435ebe;
+    border-radius: 0 3px 3px 0;
+}
+
+/* Ensure parent menu item stays highlighted when submenu is active */
+.sidebar-wrapper .menu .sidebar-item.has-sub.active > a {
+    background-color: #435ebe !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+}
+
+.sidebar-wrapper .menu .sidebar-item.has-sub.active > a i {
+    color: #fff !important;
+}
+
+.sidebar-wrapper .menu .sidebar-item.has-sub.active > a span {
+    color: #fff !important;
+}
+
+/* Keep submenu visible when active */
+.sidebar-wrapper .menu .submenu.active {
+    max-height: 999px !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}

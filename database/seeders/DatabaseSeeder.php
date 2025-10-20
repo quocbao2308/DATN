@@ -30,8 +30,16 @@ class DatabaseSeeder extends Seeder
             PhongHocSeeder::class,
             // 2. Users và phân quyền (creates giang_vien, sinh_vien, admin etc.)
             UserSeeder::class,
+
+            // 3. Lịch học và lịch thi
             LichHocSeeder::class,
             LichThiSeeder::class,
+
+            // 4. Điểm danh (phụ thuộc lịch học và sinh viên)
+            DiemDanhSeeder::class,
+
+            // 5. Học phí (phụ thuộc sinh viên và học kỳ)
+            HocPhiSeeder::class,
         ]);
     }
 }

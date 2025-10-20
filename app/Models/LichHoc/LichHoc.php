@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models\LichHoc;
 
 use App\Models\NhanSu\GiangVien;
@@ -22,17 +23,29 @@ class LichHoc extends Model
         'ghi_chu'
     ];
 
-    public function lopHocPhan() {
+    protected $casts = [
+        'ngay' => 'date',
+        'gio_bat_dau' => 'datetime:H:i',
+        'gio_ket_thuc' => 'datetime:H:i',
+    ];
+
+    public function lopHocPhan()
+    {
         return $this->belongsTo(lopHocPhan::class);
     }
 
-    public function phongHoc() {
+    public function phongHoc()
+    {
         return $this->belongsTo(PhongHoc::class);
     }
 
-    public function giangVien() {
+    public function giangVien()
+    {
         return $this->belongsTo(GiangVien::class, 'giang_vien_phu_trach');
     }
-}
 
-?>
+    public function diemDanh()
+    {
+        return $this->hasMany(DiemDanh::class, 'lich_hoc_id');
+    }
+}
