@@ -89,7 +89,7 @@ class HocPhiController extends Controller
 
         HocPhi::create($validated);
 
-        return redirect()->route('hoc-phi.index')
+        return redirect()->route('dao-tao.hoc-phi.index')
             ->with('success', 'Đã tạo phiếu thu học phí thành công!');
     }
 
@@ -133,7 +133,7 @@ class HocPhiController extends Controller
 
         $hocPhi->update($validated);
 
-        return redirect()->route('hoc-phi.index')
+        return redirect()->route('dao-tao.hoc-phi.index')
             ->with('success', 'Đã cập nhật học phí thành công!');
     }
 
@@ -145,7 +145,7 @@ class HocPhiController extends Controller
         $hocPhi = HocPhi::findOrFail($id);
         $hocPhi->delete();
 
-        return redirect()->route('hoc-phi.index')
+        return redirect()->route('dao-tao.hoc-phi.index')
             ->with('success', 'Đã xóa phiếu thu học phí thành công!');
     }
 }
