@@ -2,14 +2,14 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\Admin\KhoaController;
-use App\Http\Controllers\Admin\NganhController;
-use App\Http\Controllers\Admin\ChuyenNganhController;
-use App\Http\Controllers\Admin\DmTrinhDoController;
-use App\Http\Controllers\Admin\TrangThaiHocTapController;
-use App\Http\Controllers\Admin\KhoaHocController;
-use App\Http\Controllers\Admin\HocKyController;
-use App\Http\Controllers\Admin\PhongHocController;
+use App\Http\Controllers\DaoTao\KhoaController;
+use App\Http\Controllers\DaoTao\NganhController;
+use App\Http\Controllers\DaoTao\ChuyenNganhController;
+use App\Http\Controllers\DaoTao\DmTrinhDoController;
+use App\Http\Controllers\DaoTao\TrangThaiHocTapController;
+use App\Http\Controllers\DaoTao\KhoaHocController;
+use App\Http\Controllers\DaoTao\HocKyController;
+use App\Http\Controllers\DaoTao\PhongHocController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -84,18 +84,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('test-notifications/send', [\App\Http\Controllers\Admin\TestNotificationController::class, 'send'])->name('test-notifications.send');
 
     // Quản lý Danh mục
-    Route::resource('khoa', KhoaController::class);
-    Route::resource('nganh', NganhController::class);
-    Route::resource('chuyen-nganh', ChuyenNganhController::class);
-    Route::resource('trinh-do', DmTrinhDoController::class);
-    Route::resource('trang-thai-hoc-tap', TrangThaiHocTapController::class);
-
-    // Quản lý Thời gian
-    Route::resource('khoa-hoc', KhoaHocController::class);
-    Route::resource('hoc-ky', HocKyController::class);
-
-    // Quản lý Phòng học
-    Route::resource('phong-hoc', PhongHocController::class);
+   
 });
 
 // Đào tạo Routes
@@ -125,6 +114,18 @@ Route::prefix('dao-tao')->name('dao-tao.')->middleware(['auth'])->group(function
 
     // Quản lý Học phí
     Route::resource('hoc-phi', \App\Http\Controllers\HocPhi\HocPhiController::class);
+     Route::resource('khoa', KhoaController::class);
+    Route::resource('nganh', NganhController::class);
+    Route::resource('chuyen-nganh', ChuyenNganhController::class);
+    Route::resource('trinh-do', DmTrinhDoController::class);
+    Route::resource('trang-thai-hoc-tap', TrangThaiHocTapController::class);
+
+    // Quản lý Thời gian
+    Route::resource('khoa-hoc', KhoaHocController::class);
+    Route::resource('hoc-ky', HocKyController::class);
+
+    // Quản lý Phòng học
+    Route::resource('phong-hoc', PhongHocController::class);
 
     // Quản lý Điểm danh
     Route::get('diem-danh', [\App\Http\Controllers\LichHoc\DiemDanhController::class, 'index'])->name('diem-danh.index');
