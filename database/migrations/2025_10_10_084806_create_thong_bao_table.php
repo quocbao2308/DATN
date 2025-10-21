@@ -35,3 +35,4 @@ return new class extends Migration
         Schema::dropIfExists('thong_bao');
     }
 };
+// Ghí chsu quản lý đểm 
