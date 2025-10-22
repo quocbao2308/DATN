@@ -48,6 +48,16 @@
                     </a>
                 </li>
 
+
+                {{-- Quản lý Điểm --}}
+                <li class="sidebar-item {{ request()->is('dao-tao/grades*') ? 'active' : '' }}">
+                    <a href="{{ route('dao-tao.grades.index') }}" class='sidebar-link'>
+                        <i class="bi bi-card-checklist"></i>
+                        <span>Quản lý Điểm</span>
+                    </a>
+                </li>
+<!-- Ghí chsu quản lý đểm  -->
+
                 {{-- Chương trình khung --}}
                 <li class="sidebar-item {{ request()->is('dao-tao/chuong-trinh-khung*') ? 'active' : '' }}">
                     <a href="{{ route('dao-tao.chuong-trinh-khung.index') }}" class='sidebar-link'>

@@ -100,6 +100,11 @@ Route::prefix('dao-tao')->name('dao-tao.')->middleware(['auth'])->group(function
     // Quản lý Môn học
     Route::resource('mon-hoc', \App\Http\Controllers\DaoTao\MonHocController::class);
 
+
+    // Quản lý Điểm
+    Route::resource('grades', \App\Http\Controllers\DaoTao\GradeController::class);
+    // <!-- Ghí chsu quản lý đểm  -->
+
     // Quản lý Chương trình khung
     Route::resource('chuong-trinh-khung', \App\Http\Controllers\DaoTao\ChuongTrinhKhungController::class);
 
