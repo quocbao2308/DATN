@@ -63,6 +63,69 @@
                         <span>Lớp học phần</span>
                     </a>
                 </li>
+                
+                <li
+                    class="sidebar-item has-sub {{ request()->is('dao-tao/khoa*') || request()->is('dao-tao/nganh*') || request()->is('dao-tao/chuyen-nganh*') || request()->is('dao-tao/trinh-do*') || request()->is('dao-tao/trang-thai*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-building"></i>
+                        <span>Quản lý Danh mục</span>
+                    </a>
+                    <ul
+                        class="submenu {{ request()->is('dao-tao/khoa*') || request()->is('dao-tao/nganh*') || request()->is('dao-tao/chuyen-nganh*') || request()->is('dao-tao/trinh-do*') || request()->is('dao-tao/trang-thai*') ? 'active' : '' }}">
+                        <li class="submenu-item {{ request()->is('dao-tao/khoa*') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.khoa.index') }}">Khoa</a>
+                        </li>
+                        <li class="submenu-item {{ request()->is('dao-tao/nganh*') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.nganh.index') }}">Ngành</a>
+                        </li>
+                        <li class="submenu-item {{ request()->is('dao-tao/chuyen-nganh*') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.chuyen-nganh.index') }}">Chuyên ngành</a>
+                        </li>
+                        <li class="submenu-item {{ request()->is('dao-tao/trinh-do*') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.trinh-do.index') }}">Trình độ</a>
+                        </li>
+                        <li class="submenu-item {{ request()->is('dao-tao/trang-thai*') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.trang-thai-hoc-tap.index') }}">Trạng thái học tập</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li
+                    class="sidebar-item has-sub {{ request()->is('dao-tao/khoa-hoc*') || request()->is('dao-tao/hoc-ky*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-calendar3"></i>
+                        <span>Quản lý Thời gian</span>
+                    </a>
+                    <ul
+                        class="submenu {{ request()->is('dao-tao/khoa-hoc*') || request()->is('dao-tao/hoc-ky*') ? 'active' : '' }}">
+                        <li class="submenu-item {{ request()->is('dao-tao/khoa-hoc*') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.khoa-hoc.index') }}">Khóa học</a>
+                        </li>
+                        <li class="submenu-item {{ request()->is('dao-tao/hoc-ky*') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.hoc-ky.index') }}">Học kỳ</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="sidebar-item has-sub {{ request()->is('dao-tao/phong-hoc*') ? 'active' : '' }}">
+                    <a href="#" class="sidebar-link">
+                        <i class="bi bi-door-open"></i>
+                        <span>Quản lý Phòng học</span>
+                    </a>
+
+                    <ul class="submenu {{ request()->is('dao-tao/phong-hoc*') ? 'submenu-open' : '' }}">
+                        <li class="submenu-item {{ request()->is('dao-tao/phong-hoc') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.phong-hoc.index') }}">
+                                Danh sách phòng
+                            </a>
+                        </li>
+                        <li class="submenu-item {{ request()->is('dao-tao/phong-hoc/create') ? 'active' : '' }}">
+                            <a href="{{ route('dao-tao.phong-hoc.create') }}">
+                                Thêm phòng học
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 <li
                     class="sidebar-item has-sub {{ request()->is('dao-tao/lich-hoc*') || request()->is('dao-tao/lich-thi*') ? 'active' : '' }}">

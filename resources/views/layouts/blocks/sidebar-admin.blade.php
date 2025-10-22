@@ -53,68 +53,6 @@
                     </a>
                 </li>
 
-                <li
-                    class="sidebar-item has-sub {{ request()->is('admin/khoa*') || request()->is('admin/nganh*') || request()->is('admin/chuyen-nganh*') || request()->is('admin/trinh-do*') || request()->is('admin/trang-thai*') ? 'active' : '' }}">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-building"></i>
-                        <span>Quản lý Danh mục</span>
-                    </a>
-                    <ul
-                        class="submenu {{ request()->is('admin/khoa*') || request()->is('admin/nganh*') || request()->is('admin/chuyen-nganh*') || request()->is('admin/trinh-do*') || request()->is('admin/trang-thai*') ? 'active' : '' }}">
-                        <li class="submenu-item {{ request()->is('admin/khoa*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.khoa.index') }}">Khoa</a>
-                        </li>
-                        <li class="submenu-item {{ request()->is('admin/nganh*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.nganh.index') }}">Ngành</a>
-                        </li>
-                        <li class="submenu-item {{ request()->is('admin/chuyen-nganh*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.chuyen-nganh.index') }}">Chuyên ngành</a>
-                        </li>
-                        <li class="submenu-item {{ request()->is('admin/trinh-do*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.trinh-do.index') }}">Trình độ</a>
-                        </li>
-                        <li class="submenu-item {{ request()->is('admin/trang-thai*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.trang-thai-hoc-tap.index') }}">Trạng thái học tập</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li
-                    class="sidebar-item has-sub {{ request()->is('admin/khoa-hoc*') || request()->is('admin/hoc-ky*') ? 'active' : '' }}">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-calendar3"></i>
-                        <span>Quản lý Thời gian</span>
-                    </a>
-                    <ul
-                        class="submenu {{ request()->is('admin/khoa-hoc*') || request()->is('admin/hoc-ky*') ? 'active' : '' }}">
-                        <li class="submenu-item {{ request()->is('admin/khoa-hoc*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.khoa-hoc.index') }}">Khóa học</a>
-                        </li>
-                        <li class="submenu-item {{ request()->is('admin/hoc-ky*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.hoc-ky.index') }}">Học kỳ</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="sidebar-item has-sub {{ request()->is('admin/phong-hoc*') ? 'active' : '' }}">
-                    <a href="#" class="sidebar-link">
-                        <i class="bi bi-door-open"></i>
-                        <span>Quản lý Phòng học</span>
-                    </a>
-
-                    <ul class="submenu {{ request()->is('admin/phong-hoc*') ? 'submenu-open' : '' }}">
-                        <li class="submenu-item {{ request()->is('admin/phong-hoc') ? 'active' : '' }}">
-                            <a href="{{ route('admin.phong-hoc.index') }}">
-                                Danh sách phòng
-                            </a>
-                        </li>
-                        <li class="submenu-item {{ request()->is('admin/phong-hoc/create') ? 'active' : '' }}">
-                            <a href="{{ route('admin.phong-hoc.create') }}">
-                                Thêm phòng học
-                            </a>
-                        </li>
-                    </ul>
-                </li>
 
                 <!-- Test Thông báo -->
                 <li class="sidebar-item {{ request()->is('admin/test-notifications*') ? 'active' : '' }}">
